@@ -1,6 +1,6 @@
 #include "gameengine.h"
 
-GameEngine::GameEngine(Server* server) : server(server), QObject(server), fps(FPS), modif(false) {
+GameEngine::GameEngine(Server* server) : QObject(server), modif(false), server(server), fps(FPS) {
     msIdealUpdate = 1000/this->fps;
 }
 
@@ -121,8 +121,8 @@ void GameEngine::updatePlayers(){
 }*/
 
 void GameEngine::updatePlayers(){
-    float coeffX;
-    float coeffZ;
+    float coeffX = 0;
+    float coeffZ = 0;
 
     int XMove = 0;
     int ZMove = 0;
@@ -281,8 +281,8 @@ void GameEngine::updatePlayers(){
 		p->posZ = playerRadius + playerRadius - pos1;
 		p->cube = 6;
 		tmp = p->dirX;
-		p->dirX = p->dirZ;
-		p->dirZ = - tmp;
+        p->dirX = - p->dirZ;
+        p->dirZ = tmp;
 	    } else {
 		p->posX -= XMove;
 	    }
@@ -468,8 +468,8 @@ void GameEngine::updatePlayers(){
 		p->posX = playerRadius + playerRadius - pos2;
 		p->cube = 2;
 		tmp = p->dirX;
-		p->dirX = - p->dirZ;
-		p->dirZ = tmp;
+        p->dirX = p->dirZ;
+        p->dirZ = - tmp;
 	    } else {
 		p->posZ -= ZMove;
 	    }

@@ -36,7 +36,7 @@ void Field::regenerateMap(){
 
     this->obstacles.clear();
 
-    int nbObjects = (MAX_FIELD_X * MAX_FIELD_Z * MAX_FIELD_Z / (1000 * 1000 * 1000) ) * OBJECTS_DENSITY;
+    int nbObjects = (MAX_FIELD_X / 1000) * (MAX_FIELD_Z / 1000) * (MAX_FIELD_Z / 1000) * OBJECTS_DENSITY;
 
     for(int i = 0; i < nbObjects; i++){
 	Obstacle * o = new Obstacle(this);
