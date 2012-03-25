@@ -12,7 +12,7 @@
 #define MAX_DIAMETER 2.0
 #define MAX_LIFE 20
 #define START_LIFE 10
-#define SPEED 20
+#define SPEED 600
 #define PLAYER_DIAMETER_RATIO 20
 
 class Server;
@@ -63,6 +63,8 @@ signals:
 public slots:
 
 private:
+
+    void setFloorDistance();
 
 };
 

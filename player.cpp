@@ -46,6 +46,8 @@ bool Player::takeHit(int power){
   this->height = this->width;
   this->length = this->width;
 
+  setFloorDistance();
+
   return death;
 }
 
@@ -58,6 +60,8 @@ void Player::hitPlayer(Player & p, int power){
 	this->width = ((diameterDiff * this->life / MAX_LIFE) + MIN_DIAMETER) * PLAYER_DIAMETER_RATIO;
 	this->height = this->width;
 	this->length = this->width;
+
+    setFloorDistance();
   }
 
   if(p.takeHit(power)){
@@ -73,4 +77,33 @@ void Player::fire(){
   Projectile * p = new Projectile(this);
 
   this->projectiles.push_back(p);
+}
+
+void Player::setFloorDistance(){
+  switch(this->cube){
+  case 1:
+    this->posY = this->width * RATIO;
+    break;
+
+  case 2:
+    this->posZ = this->width * RATIO;
+    break;
+
+  case 3:
+    this->posX = Server::getServer()->getGameEngine().getField().maxX - (this->width * RATIO);
+    break;
+
+  case 4:
+    this->posZ = Server::getServer()->getGameEngine().getField().maxX - (this->width * RATIO);
+    break;
+
+  case 5:
+    this->posY = Server::getServer()->getGameEngine().getField().maxX - (this->width * RATIO);
+    break;
+
+  case 6:
+    this->posX = this->width * RATIO;
+    break;
+
+  }
 }

@@ -4,7 +4,7 @@
 #include "sphere.h"
 #include "player.h"
 
-#define DEFAULT_SPEED 100
+#define DEFAULT_SPEED 6000
 #define PROJECTILE_DIAMETER_RATIO 6
 #define DEFAULT_POWER 1
 

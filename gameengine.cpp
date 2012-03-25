@@ -9,15 +9,17 @@ void GameEngine::init(){
   timer->setSingleShot(true);
   connect(this->timer, SIGNAL(timeout()), this, SLOT(updateObjects()));
 
+  time.start();
+
   updateObjects();
 }
 
 void GameEngine::updateObjects(){
-  QTime t;
-  t.start();
+  //QTime t;
+  int msSinceLastUpdate = time.restart();
 
-  updatePlayers();
-  updateProjectiles();
+  updatePlayers(msSinceLastUpdate);
+  updateProjectiles(msSinceLastUpdate);
   manageColisions();
 
   if(this->modif) {
@@ -27,7 +29,7 @@ void GameEngine::updateObjects(){
 	this->modif = false;
   }
 
-  int span = msIdealUpdate - t.elapsed();
+  int span = msIdealUpdate - time.restart();
 
   if(span <= 0){
 	span = 1;
@@ -120,7 +122,7 @@ void GameEngine::updatePlayers(){
     }
 }*/
 
-void GameEngine::updatePlayers(){
+void GameEngine::updatePlayers(int msSinceLastUpdate){
   float coeffX = 0;
   float coeffZ = 0;
 
@@ -163,26 +165,27 @@ void GameEngine::updatePlayers(){
       break;
 	}
 
+    float relativeSpeed = msSinceLastUpdate / 1000.0 * p->speed;
 
 	//Avancer / Reculer
 	if(!(p->keyForwards && p->keyBackwards)){
       if(p->keyForwards){
 		if(!(p->keyLeft || p->keyRight)){
-          XMove += p->speed * coeffX;
-          ZMove += p->speed * coeffZ;
+          XMove += relativeSpeed * coeffX;
+          ZMove += relativeSpeed * coeffZ;
 		} else {
-          XMove += p->speed * coeffX / 2;
-          ZMove += p->speed * coeffZ / 2;
+          XMove += relativeSpeed * coeffX / 2;
+          ZMove += relativeSpeed * coeffZ / 2;
 		}
 		if(!this->modif)
           this->modif = true;
       } else if(p->keyBackwards){
 		if(!(p->keyLeft || p->keyRight)){
-          XMove -= p->speed * coeffX;
-          ZMove -= p->speed * coeffZ;
+          XMove -= relativeSpeed * coeffX;
+          ZMove -= relativeSpeed * coeffZ;
 		} else {
-          XMove -= p->speed * coeffX / 2;
-          ZMove -= p->speed * coeffZ / 2;
+          XMove -= relativeSpeed * coeffX / 2;
+          ZMove -= relativeSpeed * coeffZ / 2;
 		}
 		if(!this->modif)
           this->modif = true;
@@ -193,21 +196,21 @@ void GameEngine::updatePlayers(){
 	if(!(p->keyLeft && p->keyRight)){
       if(p->keyLeft){
 		if(!(p->keyBackwards || p->keyForwards)){
-          XMove += p->speed * coeffZ;
-          ZMove -= p->speed * coeffX;
+          XMove += relativeSpeed * coeffZ;
+          ZMove -= relativeSpeed * coeffX;
 		} else {
-          XMove += p->speed * coeffZ / 2;
-          ZMove -= p->speed * coeffX / 2;
+          XMove += relativeSpeed * coeffZ / 2;
+          ZMove -= relativeSpeed * coeffX / 2;
 		}
 		if(!this->modif)
           this->modif = true;
       } else if(p->keyRight){
 		if(!(p->keyBackwards || p->keyForwards)){
-          XMove -= p->speed * coeffZ;
-          ZMove += p->speed * coeffX;
+          XMove -= relativeSpeed * coeffZ;
+          ZMove += relativeSpeed * coeffX;
 		} else {
-          XMove -= p->speed * coeffZ / 2;
-          ZMove += p->speed * coeffX / 2;
+          XMove -= relativeSpeed * coeffZ / 2;
+          ZMove += relativeSpeed * coeffX / 2;
 		}
 		if(!this->modif)
           this->modif = true;
@@ -496,7 +499,7 @@ void GameEngine::updatePlayers(){
   }
 }
 
-void GameEngine::updateProjectiles(){
+void GameEngine::updateProjectiles(int msSinceLastUpdate){
 
   float coeffX;
   float coeffY;
@@ -504,8 +507,10 @@ void GameEngine::updateProjectiles(){
 
   float sumCoeff;
 
+  float relativeSpeed;
+
   foreach(Player *pl, server->getPlayers()){
-	foreach(Projectile *p, pl->projectiles){
+    foreach(Projectile *p, pl->projectiles){
       p->oldPosX = p->posX;
       p->oldPosY = p->posY;
       p->oldPosZ = p->posZ;
@@ -515,9 +520,11 @@ void GameEngine::updateProjectiles(){
       coeffY = p->dirY / sumCoeff;
       coeffZ = p->dirZ / sumCoeff;
 
-      p->posX += p->speed * coeffX;
-      p->posY += p->speed * coeffY;
-      p->posZ += p->speed * coeffZ;
+      relativeSpeed = msSinceLastUpdate / 1000.0 * p->speed;
+
+      p->posX += relativeSpeed * coeffX;
+      p->posY += relativeSpeed * coeffY;
+      p->posZ += relativeSpeed * coeffZ;
 
       if(p->posX < 0 || p->posZ < 0 || p->posX > field.maxX ||p->posZ > field.maxZ ){
 		pl->projectiles.removeOne(p);

@@ -1,7 +1,7 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
-#define FPS 50
+#define FPS 80
 
 #include <QObject>
 #include <QTimer>
@@ -43,10 +43,12 @@ private:
 
     QTimer * timer;
 
+    QTime time;
+
     Field field;
 
-    void updatePlayers();
-    void updateProjectiles();
+    void updatePlayers(int msSinceLastUpdate);
+    void updateProjectiles(int msSinceLastUpdate);
     void manageColisions();
 
     bool colide(GameObject *o1, GameObject *o2);
