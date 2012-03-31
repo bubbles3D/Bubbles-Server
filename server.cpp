@@ -246,18 +246,18 @@ void Server::forgePlayersInfo(QVariantMap & packet){
 	QVariantMap player;
 	player.insert("name", p->name);
 	player.insert("id", p->id);
-	player.insert("x", p->posX);
-	player.insert("y", p->posY);
-	player.insert("z", p->posZ);
-	player.insert("vx", p->dirX);
-	player.insert("vy", p->dirY);
-	player.insert("vz", p->dirZ);
+    player.insert("x", (double)p->posX);
+    player.insert("y", (double)p->posY);
+    player.insert("z", (double)p->posZ);
+    player.insert("vx", (double)p->dirX);
+    player.insert("vy", (double)p->dirY);
+    player.insert("vz", (double)p->dirZ);
 	player.insert("life", p->life);
 	player.insert("deaths", p->deads);
 	player.insert("kills", p->kills);
-	player.insert("w", p->width);
-	player.insert("h", p->height);
-	player.insert("l", p->length);
+    player.insert("w", (double)p->width);
+    player.insert("h", (double)p->height);
+    player.insert("l", (double)p->length);
 	player.insert("cube", p->cube);
 
 	pls << player;
@@ -274,15 +274,15 @@ void Server::forgeProjectilesInfo(QVariantMap & packet){
 	    QVariantMap projectile;
 	    projectile.insert("player", p->name);
 	    projectile.insert("id", pr->id);
-	    projectile.insert("x", pr->posX);
-	    projectile.insert("y", pr->posY);
-	    projectile.insert("z", pr->posZ);
-	    projectile.insert("vx", pr->dirX);
-	    projectile.insert("vy", pr->dirY);
-	    projectile.insert("vz", pr->dirZ);
-	    projectile.insert("w", pr->width);
-	    projectile.insert("h", pr->height);
-	    projectile.insert("l", pr->length);
+        projectile.insert("x", (double)pr->posX);
+        projectile.insert("y", (double)pr->posY);
+        projectile.insert("z", (double)pr->posZ);
+        projectile.insert("vx", (double)pr->dirX);
+        projectile.insert("vy", (double)pr->dirY);
+        projectile.insert("vz", (double)pr->dirZ);
+        projectile.insert("w", (double)pr->width);
+        projectile.insert("h", (double)pr->height);
+        projectile.insert("l", (double)pr->length);
 
 	    pro << projectile;
 	}

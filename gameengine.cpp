@@ -35,7 +35,7 @@ void GameEngine::updateObjects(){
 	span = 1;
   }
 
-  //qDebug() << "Players updated! Span:" + QString::number(span);
+  //qDebug() << "Objects updated! Span:" + QString::number(span);
 
   this->timer->start(span);
 }
@@ -282,8 +282,7 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
       } else if(pos1 < playerRadius){
 		p->posX = playerRadius;
 		p->posZ = playerRadius + playerRadius - pos1;
-		p->cube = 6;
-        qDebug() << "2to6 z: " << p->posX << ":" << p->posZ;
+        p->cube = 6;
 		tmp = p->dirX;
         p->dirX = p->dirZ;
         p->dirZ = - tmp;
@@ -469,8 +468,7 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
 		p->dirZ = - tmp;
       } else if(pos2 < playerRadius){
 		p->posZ = playerRadius;
-		p->posX = playerRadius + playerRadius - pos2;
-        qDebug() << "6to2 x: " << p->posX << ":" << p->posZ;;
+        p->posX = playerRadius + playerRadius - pos2;
 		p->cube = 2;
         tmp = p->dirZ;
         p->dirZ = p->dirX;
@@ -485,17 +483,23 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
 	//Pour ne pas depasser les limites de la carte.
 	if(p->posX < 0){
       p->posX = 0;
-	}
-	if(p->posZ < 0){
+    }
+    if(p->posY < 0){
+      p->posY = 0;
+    }
+    if(p->posZ < 0){
       p->posZ = 0;
-	}
+    }
 
 	if(p->posX > field.maxX){
       p->posX = field.maxX;
-	}
-	if(p->posZ > field.maxZ){
+    }
+    if(p->posY > field.maxY){
+      p->posY = field.maxY;
+    }
+    if(p->posZ > field.maxZ){
       p->posZ = field.maxZ;
-	}
+    }
   }
 }
 
@@ -526,7 +530,7 @@ void GameEngine::updateProjectiles(int msSinceLastUpdate){
       p->posY += relativeSpeed * coeffY;
       p->posZ += relativeSpeed * coeffZ;
 
-      if(p->posX < 0 || p->posZ < 0 || p->posX > field.maxX ||p->posZ > field.maxZ ){
+      if(p->posX < 0 || p->posY < 0 || p->posZ < 0 || p->posX > field.maxX || p->posY > field.maxY ||p->posZ > field.maxZ ){
 		pl->projectiles.removeOne(p);
 		p->deleteLater();
       }
@@ -627,33 +631,42 @@ bool GameEngine::colide(Sphere *s, Cuboid *c){
 }
 
 void GameEngine::manageColisions(){
-  QList<GameObject*> objects;
+  QList<GameObject*> staticObjects;
+  QList<GameObject*> dynamicObjects;
 
-  //On construit une liste avec tous les objets du jeu
+  //Dynamic
   foreach(Player * p, server->getPlayers()){
-	objects << p;
+    dynamicObjects << p;
 
 	foreach(Projectile * pr, p->projectiles){
-      objects << pr;
+      dynamicObjects << pr;
 	}
   }
 
-  QList<GameObject*> remainingObjects;
-  remainingObjects.append(objects);
-
+  //Static
   foreach(Obstacle *o, this->field.obstacles){
-	objects << o;
+    staticObjects << o;
   }
 
-  foreach(GameObject* o1, objects){
-	foreach(GameObject* o2, remainingObjects){
+  //Static - Dynamic
+  foreach(GameObject* o1, staticObjects){
+    foreach(GameObject* o2, dynamicObjects){
       if(o1 != o2 && colide(o1, o2)){
-		//qDebug() << "COLIDEEEEEEEEEEE ";
+        //qDebug() << "COLIDEEEEEEEEEEE ";
       }
-	}
+    }
   }
 
-  //remainingObjects.removeOne(objects.at(i));
+  int i;
+  int j;
+  //Dynamic - Dynamic
+  for(i = 0; i < dynamicObjects.length(); ++i){
+    for(j = i + 1; j < dynamicObjects.length(); ++j){
+      if(colide(dynamicObjects[i], dynamicObjects[j])){
+        //qDebug() << "COLIDEEEEEEEEEEE ";
+      }
+    }
+  }
 
 }
 
@@ -712,14 +725,14 @@ bool GameEngine::colidePlayerPlayer(Player *p1, Player *p2){
 }
 
 bool GameEngine::colideProjectileProjectile(Projectile *p1, Projectile *p2){
-  if(p1->owner != p2->owner){
+  //if(p1->owner != p2->owner){
 	p1->explode();
 	p2->explode();
 
 	return true;
-  } else {
-	return false;
-  }
+  //} else {
+    //return false;
+  //}
 }
 
 bool GameEngine::colideProjectileObstacle(Projectile *p, Obstacle *o){

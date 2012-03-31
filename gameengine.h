@@ -1,7 +1,7 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
-#define FPS 80
+#define FPS 40
 
 #include <QObject>
 #include <QTimer>
