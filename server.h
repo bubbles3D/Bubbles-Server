@@ -43,9 +43,10 @@ private:
 
     GameEngine * g;
 
-    void sendToPlayers(QByteArray packet);
+    void sendToAllPlayers(QByteArray & packet);
+    void sendToPlayer(Player & p, QByteArray & packet);
 
-    void sendInitToPlayers();
+    void sendInitToPlayer(Player & p);
 
     void processRequest(Player &p, QString req);
 

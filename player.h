@@ -12,7 +12,7 @@
 #define MAX_DIAMETER 2.0
 #define MAX_LIFE 20
 #define START_LIFE 10
-#define SPEED 1200
+#define SPEED 800
 #define PLAYER_DIAMETER_RATIO 20
 
 class Server;

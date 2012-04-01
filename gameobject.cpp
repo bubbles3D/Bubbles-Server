@@ -119,3 +119,30 @@ void GameObject::setLength(float length){
   this->length = length;
   this->modifiedProperties.insert("length", QString::number(length));
 }
+
+int GameObject::getColorRED(){
+  return this->colorRED;
+}
+
+void GameObject::setColorRED(int colorRED){
+  this->colorRED = colorRED;
+  this->modifiedProperties.insert("colorRED", QString::number(colorRED));
+}
+
+int GameObject::getColorGREEN(){
+  return this->colorGREEN;
+}
+
+void GameObject::setColorGREEN(int colorGREEN){
+  this->colorGREEN = colorGREEN;
+  this->modifiedProperties.insert("colorGREEN", QString::number(colorGREEN));
+}
+
+int GameObject::getColorBLUE(){
+  return this->colorBLUE;
+}
+
+void GameObject::setColorBLUE(int colorBLUE){
+  this->colorBLUE = colorBLUE;
+  this->modifiedProperties.insert("colorBLUE", QString::number(colorBLUE));
+}

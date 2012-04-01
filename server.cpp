@@ -106,7 +106,7 @@ void Server::processRequest(Player &p, QString req){
   if(req.startsWith("init")){
     p.setName(req.split(' ')[1]);
 
-	sendInitToPlayers();
+    sendInitToPlayer(p);
   } else if(req.startsWith("update")){
 	sendUpdateToPlayers();
   } else {
@@ -243,9 +243,12 @@ void Server::forgePlayersInfo(QVariantMap & packet){
   QVariantList pls;
 
   foreach(Player *p, this->players){
+    //if(pr->getModifiedProperties().size() > 0 ) {
+
 	QVariantMap player;
+
+    player.insert("id", p->id);
     player.insert("name", p->getName());
-	player.insert("id", p->id);
     player.insert("x", (double)p->getPosX());
     player.insert("y", (double)p->getPosY());
     player.insert("z", (double)p->getPosZ());
@@ -260,7 +263,27 @@ void Server::forgePlayersInfo(QVariantMap & packet){
     player.insert("l", (double)p->getLength());
     player.insert("cube", p->getCube());
 
+    /*
+    player.insert("id", p->id);
+    if(p->getModifiedProperties().contains("name")) player.insert("name", p->getName());
+    if(p->getModifiedProperties().contains("posX")) player.insert("x", (double)p->getPosX());
+    if(p->getModifiedProperties().contains("posY")) player.insert("y", (double)p->getPosY());
+    if(p->getModifiedProperties().contains("posZ")) player.insert("z", (double)p->getPosZ());
+    if(p->getModifiedProperties().contains("dirX")) player.insert("vx", (double)p->getDirX());
+    if(p->getModifiedProperties().contains("dirY")) player.insert("vy", (double)p->getDirY());
+    if(p->getModifiedProperties().contains("dirZ")) player.insert("vz", (double)p->getDirZ());
+    if(p->getModifiedProperties().contains("life")) player.insert("life", p->getLife());
+    if(p->getModifiedProperties().contains("deaths")) player.insert("deaths", p->getDeads());
+    if(p->getModifiedProperties().contains("kills")) player.insert("kills", p->getKills());
+    if(p->getModifiedProperties().contains("width")) player.insert("w", (double)p->getWidth());
+    if(p->getModifiedProperties().contains("height")) player.insert("h", (double)p->getHeight());
+    if(p->getModifiedProperties().contains("length")) player.insert("l", (double)p->getLength());
+    if(p->getModifiedProperties().contains("cube")) player.insert("cube", p->getCube());
+    */
+
 	pls << player;
+
+    //}
   }
 
   packet.insert("players", pls);
@@ -270,10 +293,13 @@ void Server::forgeProjectilesInfo(QVariantMap & packet){
   QVariantList pro;
 
   foreach(Player *p, this->players){
-	foreach(Projectile *pr, p->projectiles){
+    foreach(Projectile *pr, p->projectiles){
+      //if(pr->getModifiedProperties().size() > 0 ) {
+
       QVariantMap projectile;
-      projectile.insert("player", p->getName());
+
       projectile.insert("id", pr->id);
+      projectile.insert("player", p->getName());
       projectile.insert("x", (double)pr->getPosX());
       projectile.insert("y", (double)pr->getPosY());
       projectile.insert("z", (double)pr->getPosZ());
@@ -284,18 +310,39 @@ void Server::forgeProjectilesInfo(QVariantMap & packet){
       projectile.insert("h", (double)pr->getHeight());
       projectile.insert("l", (double)pr->getLength());
 
+      /*
+      projectile.insert("id", pr->id);
+      if(pr->getModifiedProperties().contains("posX")) projectile.insert("x", (double)pr->getPosX());
+      if(pr->getModifiedProperties().contains("posY")) projectile.insert("y", (double)pr->getPosY());
+      if(pr->getModifiedProperties().contains("posZ")) projectile.insert("z", (double)pr->getPosZ());
+      if(pr->getModifiedProperties().contains("dirX")) projectile.insert("vx", (double)pr->getDirX());
+      if(pr->getModifiedProperties().contains("dirY")) projectile.insert("vy", (double)pr->getDirY());
+      if(pr->getModifiedProperties().contains("dirZ")) projectile.insert("vz", (double)pr->getDirZ());
+      if(pr->getModifiedProperties().contains("width")) projectile.insert("w", (double)pr->getWidth());
+      if(pr->getModifiedProperties().contains("height")) projectile.insert("h", (double)pr->getHeight());
+      if(pr->getModifiedProperties().contains("length")) projectile.insert("l", (double)pr->getLength());
+
+      pr->getModifiedProperties().clear();
+      */
+
       pro << projectile;
+
+      //}
 	}
   }
 
   packet.insert("bullets", pro);
 }
 
-void Server::sendToPlayers(QByteArray packet){
+void Server::sendToAllPlayers(QByteArray & packet){
   foreach(Player *p, players){
-	p->socket->write(packet);
-	p->socket->flush();
+    sendToPlayer(*p, packet);
   }
+}
+
+void Server::sendToPlayer(Player & p, QByteArray & packet){
+  p.socket->write(packet);
+  p.socket->flush();
 }
 
 QList<Player*> Server::getPlayers(){
@@ -308,17 +355,19 @@ void Server::sendUpdateToPlayers(){
 
   r = forgeUpdate();
 
-  sendToPlayers(r);
+  sendToAllPlayers(r);
 
   //qDebug() << " : Requette envoyée : \n" + r;
 }
 
-void Server::sendInitToPlayers(){
+void Server::sendInitToPlayer(Player & p){
   QByteArray r;
 
   r = forgeInit();
 
-  sendToPlayers(r);
+  sendToPlayer(p, r);
+
+  sendUpdateToPlayers();
 
   //qDebug() << " : Requette envoyée : \n" + r;
 }

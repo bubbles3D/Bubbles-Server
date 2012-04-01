@@ -43,6 +43,13 @@ public:
     float getLength();
     void setLength(float length);
 
+    int getColorRED();
+    void setColorRED(int colorRED);
+    int getColorGREEN();
+    void setColorGREEN(int colorGREEN);
+    int getColorBLUE();
+    void setColorBLUE(int colorBLUE);
+
     QMap<QString, QString> & getModifiedProperties();
 
 signals:
@@ -70,6 +77,10 @@ private:
     float width;
     float height;
     float length;
+
+    int colorRED;
+    int colorGREEN;
+    int colorBLUE;
 
 };
 
