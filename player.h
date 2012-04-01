@@ -28,23 +28,31 @@ public:
     QIPv6Address ip;
     int port;
 
-    QString name;
+    QString getName();
+    void setName(QString name);
 
-    bool keyForwards;
-    bool keyBackwards;
-    bool keyLeft;
-    bool keyRight;
+    bool getKeyForwards();
+    void setKeyForwards(bool keyForwards);
+    bool getKeyBackwards();
+    void setKeyBackwards(bool keyBackwards);
+    bool getKeyLeft();
+    void setKeyLeft(bool keyLeft);
+    bool getKeyRight();
+    void setKeyRight(bool keyRight);
 
-    int speed;
+    int getSpeed();
+    void setSpeed(int speed);
 
-    int life;
+    int getLife();
+    void setLife(int life);
 
-    int deads;
-    int kills;
+    int getDeads();
+    void setDeads(int deads);
+    int getKills();
+    void setKills(int kills);
 
-    int cube; //Sur quelle face du cube le joueur est.
-    float cubePosX;
-    float cubePosY;
+    int getCube();
+    void setCube(int cube);
 
     QString request;
     bool pendingRequest;
@@ -65,6 +73,22 @@ public slots:
 private:
 
     void setFloorDistance();
+
+    QString name;
+
+    bool keyForwards;
+    bool keyBackwards;
+    bool keyLeft;
+    bool keyRight;
+
+    int speed;
+
+    int life;
+
+    int deads;
+    int kills;
+
+    int cube; //Sur quelle face du cube le joueur est.
 
 };
 

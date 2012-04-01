@@ -15,6 +15,46 @@ public:
 
     int id;
 
+    float getPosX();
+    void setPosX(float posX);
+    float getPosY();
+    void setPosY(float posY);
+    float getPosZ();
+    void setPosZ(float posZ);
+
+    float getOldPosX();
+    void setOldPosX(float oldPosX);
+    float getOldPosY();
+    void setOldPosY(float oldPosY);
+    float getOldPosZ();
+    void setOldPosZ(float oldPosZ);
+
+    float getDirX();
+    void setDirX(float dirX);
+    float getDirY();
+    void setDirY(float dirY);
+    float getDirZ();
+    void setDirZ(float dirZ);
+
+    float getWidth();
+    void setWidth(float width);
+    float getHeight();
+    void setHeight(float height);
+    float getLength();
+    void setLength(float length);
+
+    QMap<QString, QString> & getModifiedProperties();
+
+signals:
+
+public slots:
+
+protected:
+    QMap<QString, QString> modifiedProperties;
+
+private:
+    static int idCounter;
+
     float posX;
     float posY;
     float posZ;
@@ -30,15 +70,6 @@ public:
     float width;
     float height;
     float length;
-
-signals:
-
-public slots:
-
-protected:
-
-private:
-    static int idCounter;
 
 };
 

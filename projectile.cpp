@@ -5,16 +5,16 @@ Projectile::Projectile(Player * playerOwner) : Sphere(playerOwner){
     speed = DEFAULT_SPEED;
     this->power = DEFAULT_POWER;
 
-    this->width = PROJECTILE_DIAMETER_RATIO;
-    this->height = PROJECTILE_DIAMETER_RATIO;
-    this->length = PROJECTILE_DIAMETER_RATIO;
+    this->setWidth(PROJECTILE_DIAMETER_RATIO);
+    this->setHeight(PROJECTILE_DIAMETER_RATIO);
+    this->setLength(PROJECTILE_DIAMETER_RATIO);
 
-    this->posX = playerOwner->posX;
-    this->posY = playerOwner->posY;
-    this->posZ = playerOwner->posZ;
-    this->dirX = playerOwner->dirX;
-    this->dirY = playerOwner->dirY;
-    this->dirZ = playerOwner->dirZ;
+    this->setPosX(playerOwner->getPosX());
+    this->setPosY(playerOwner->getPosY());
+    this->setPosZ(playerOwner->getPosZ());
+    this->setDirX(playerOwner->getDirX());
+    this->setDirY(playerOwner->getDirY());
+    this->setDirZ(playerOwner->getDirZ());
 }
 
 void Projectile::explode(){

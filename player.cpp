@@ -3,22 +3,22 @@
 #include "server.h"
 
 Player::Player(QObject *parent) : Sphere(parent) {
-  keyForwards = false;
-  keyBackwards = false;
-  keyRight = false;
-  keyLeft = false;
-  speed = SPEED;
-  dirX = 1;
-  dirY = 0;
-  dirZ = 0;
-  life = START_LIFE;
-  deads = 0;
-  kills = 0;
-  width = PLAYER_DIAMETER_RATIO;
-  height = PLAYER_DIAMETER_RATIO;
-  length = PLAYER_DIAMETER_RATIO;
-  posY = height * RATIO;
-  cube = 1;
+  setKeyForwards(false);
+  setKeyBackwards(false);
+  setKeyLeft(false);
+  setKeyRight(false);
+  setSpeed(SPEED);
+  setDirX(1);
+  setDirY(0);
+  setDirZ(0);
+  setLife(START_LIFE);
+  setDeads(0);
+  setKills(0);
+  setWidth(PLAYER_DIAMETER_RATIO);
+  setHeight(PLAYER_DIAMETER_RATIO);
+  setLength(PLAYER_DIAMETER_RATIO);
+  setPosY(getHeight() * RATIO);
+  setCube(1);
 
   this->respawn();
 }
@@ -26,14 +26,12 @@ Player::Player(QObject *parent) : Sphere(parent) {
 bool Player::takeHit(int power){
   bool death = false;
 
-  this->life -= power;
+  this->setLife(this->getLife() - power);
 
+  if(this->getLife() <= 0){
+    this->setLife(START_LIFE);
 
-
-  if(life <= 0){
-	this->life = START_LIFE;
-
-	this->deads++;
+    this->setDeads(this->getDeads() + 1);
 
 	respawn();
 
@@ -42,9 +40,9 @@ bool Player::takeHit(int power){
 
   double diameterDiff = MAX_DIAMETER - MIN_DIAMETER;
 
-  this->width = ((diameterDiff * this->life / MAX_LIFE) + MIN_DIAMETER) * PLAYER_DIAMETER_RATIO;
-  this->height = this->width;
-  this->length = this->width;
+  this->setWidth(((diameterDiff * this->getLife() / MAX_LIFE) + MIN_DIAMETER) * PLAYER_DIAMETER_RATIO);
+  this->setHeight(this->getWidth());
+  this->setLength(this->getWidth());
 
   setFloorDistance();
 
@@ -52,20 +50,20 @@ bool Player::takeHit(int power){
 }
 
 void Player::hitPlayer(Player & p, int power){
-  if(this->life < MAX_LIFE){
-	this->life++;
+  if(this->getLife() < MAX_LIFE){
+    this->setLife(this->getLife() + 1);
 
 	double diameterDiff = MAX_DIAMETER - MIN_DIAMETER;
 
-	this->width = ((diameterDiff * this->life / MAX_LIFE) + MIN_DIAMETER) * PLAYER_DIAMETER_RATIO;
-	this->height = this->width;
-	this->length = this->width;
+    this->setWidth(((diameterDiff * this->getLife() / MAX_LIFE) + MIN_DIAMETER) * PLAYER_DIAMETER_RATIO);
+    this->setHeight(this->getWidth());
+    this->setLength(this->getWidth());
 
     setFloorDistance();
   }
 
   if(p.takeHit(power)){
-	this->kills++;
+    this->setKills(this->getKills() + 1);
   }
 }
 
@@ -80,30 +78,110 @@ void Player::fire(){
 }
 
 void Player::setFloorDistance(){
-  switch(this->cube){
+  switch(this->getCube()){
   case 1:
-    this->posY = this->width * RATIO;
+    this->setPosY(this->getWidth() * RATIO);
     break;
 
   case 2:
-    this->posZ = this->width * RATIO;
+    this->setPosZ(this->getWidth() * RATIO);
     break;
 
   case 3:
-    this->posX = Server::getServer()->getGameEngine().getField().maxX - (this->width * RATIO);
+    this->setPosX(Server::getServer()->getGameEngine().getField().maxX - (this->getWidth() * RATIO));
     break;
 
   case 4:
-    this->posZ = Server::getServer()->getGameEngine().getField().maxX - (this->width * RATIO);
+    this->setPosZ(Server::getServer()->getGameEngine().getField().maxX - (this->getWidth() * RATIO));
     break;
 
   case 5:
-    this->posY = Server::getServer()->getGameEngine().getField().maxX - (this->width * RATIO);
+    this->setPosY(Server::getServer()->getGameEngine().getField().maxX - (this->getWidth() * RATIO));
     break;
 
   case 6:
-    this->posX = this->width * RATIO;
+    this->setPosX(this->getWidth() * RATIO);
     break;
 
   }
+}
+
+QString Player::getName(){
+  return this->name;
+}
+
+void Player::setName(QString name){
+  this->name = name;
+}
+
+bool Player::getKeyForwards(){
+  return this->keyForwards;
+}
+
+void Player::setKeyForwards(bool keyForwards){
+  this->keyForwards = keyForwards;
+}
+
+bool Player::getKeyBackwards(){
+  return this->keyBackwards;
+}
+
+void Player::setKeyBackwards(bool keyBackwards){
+  this->keyBackwards = keyBackwards;
+}
+
+bool Player::getKeyLeft(){
+  return this->keyLeft;
+}
+
+void Player::setKeyLeft(bool keyLeft){
+  this->keyLeft = keyLeft;
+}
+
+bool Player::getKeyRight(){
+  return this->keyRight;
+}
+
+void Player::setKeyRight(bool keyRight){
+  this->keyRight = keyRight;
+}
+
+int Player::getSpeed(){
+  return this->speed;
+}
+
+void Player::setSpeed(int speed){
+  this->speed = speed;
+}
+
+int Player::getLife(){
+  return this->life;
+}
+
+void Player::setLife(int life){
+  this->life = life;
+}
+
+int Player::getDeads(){
+  return this->deads;
+}
+
+void Player::setDeads(int deads){
+  this->deads = deads;
+}
+
+int Player::getKills(){
+  return this->kills;
+}
+
+void Player::setKills(int kills){
+  this->kills = kills;
+}
+
+int Player::getCube(){
+  return this->cube;
+}
+
+void Player::setCube(int cube){
+  this->cube = cube;
 }
