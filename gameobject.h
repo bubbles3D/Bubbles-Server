@@ -5,7 +5,8 @@
 #include <QDebug>
 
 //#define RATIO 4.98725
-#define RATIO 2.25
+//#define RATIO 2.25
+#define RATIO 1
 
 class GameObject : public QObject
 {

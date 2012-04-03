@@ -67,6 +67,8 @@ private:
 
     bool colideProjectileObstacle(Projectile *p, Obstacle *o);
     bool colidePlayerObstacle(Player *p, Obstacle *o);
+
+    float absF(float value);
 };
 
 #endif // GAMEENGINE_H

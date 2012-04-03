@@ -277,7 +277,9 @@ void Server::forgePlayersInfo(QVariantMap & packet, bool force){
       if(force || p->getModifiedProperties().contains("length")) player.insert("l", (double)p->getLength());
       if(force || p->getModifiedProperties().contains("cube")) player.insert("cube", p->getCube());
 
-      p->getModifiedProperties().clear();
+      if(!force){ //On ne veut pas effacer les modifs en cas de force
+        p->getModifiedProperties().clear();
+      }
 
       if(player.size() > 1){ //Si on a donné autre chose que l'id..
         pls << player;
@@ -311,7 +313,9 @@ void Server::forgeProjectilesInfo(QVariantMap & packet, bool force){
         if(force || pr->getModifiedProperties().contains("height")) projectile.insert("h", (double)pr->getHeight());
         if(force || pr->getModifiedProperties().contains("length")) projectile.insert("l", (double)pr->getLength());
 
-        pr->getModifiedProperties().clear();
+        if(!force){
+          pr->getModifiedProperties().clear();
+        }
 
         if(projectile.size() > 1){ //Si on a donné autre chose que l'id..
           pro << projectile;

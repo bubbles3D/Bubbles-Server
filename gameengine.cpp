@@ -52,8 +52,8 @@ void GameEngine::updatePlayers(){
  p->oldPosY = p->posY;
  p->oldPosZ = p->posZ;
 
- coeffX = p->dirX / (abs(p->dirX) + abs(p->dirZ));
- coeffZ = p->dirZ / (abs(p->dirX) + abs(p->dirZ));
+ coeffX = p->dirX / (absF(p->dirX) + absF(p->dirZ));
+ coeffZ = p->dirZ / (absF(p->dirX) + absF(p->dirZ));
 
  //Avancer / Reculer
  if(!(p->keyForwards && p->keyBackwards)){
@@ -126,8 +126,8 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
   float coeffX = 0;
   float coeffZ = 0;
 
-  int XMove = 0;
-  int ZMove = 0;
+  float XMove = 0;
+  float ZMove = 0;
 
   //Avancer / Reculer
   foreach(Player *p, server->getPlayers()){
@@ -140,30 +140,30 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
 
     switch(p->getCube()){
 	case 1:
-      coeffX = p->getDirX() / (abs(p->getDirX()) + abs(p->getDirZ()));
-      coeffZ = p->getDirZ() / (abs(p->getDirX()) + abs(p->getDirZ()));
+      coeffX = p->getDirX() / (absF(p->getDirX()) + absF(p->getDirZ()));
+      coeffZ = p->getDirZ() / (absF(p->getDirX()) + absF(p->getDirZ()));
       break;
 	case 2:
-      coeffZ = p->getDirY() / (abs(p->getDirY()) + abs(p->getDirX()));
-      coeffX = - p->getDirX() / (abs(p->getDirY()) + abs(p->getDirX()));
+      coeffZ = p->getDirY() / (absF(p->getDirY()) + absF(p->getDirX()));
+      coeffX = - p->getDirX() / (absF(p->getDirY()) + absF(p->getDirX()));
       break;
 	case 3:
-      coeffZ = p->getDirZ() / (abs(p->getDirZ()) + abs(p->getDirY()));
-      coeffX = p->getDirY() / (abs(p->getDirZ()) + abs(p->getDirY()));
+      coeffZ = p->getDirZ() / (absF(p->getDirZ()) + absF(p->getDirY()));
+      coeffX = p->getDirY() / (absF(p->getDirZ()) + absF(p->getDirY()));
       break;
 	case 4:
-      coeffZ = p->getDirY() / (abs(p->getDirY()) + abs(p->getDirX()));
-      coeffX = p->getDirX() / (abs(p->getDirY()) + abs(p->getDirX()));
+      coeffZ = p->getDirY() / (absF(p->getDirY()) + absF(p->getDirX()));
+      coeffX = p->getDirX() / (absF(p->getDirY()) + absF(p->getDirX()));
       break;
 	case 5:
-      coeffX = p->getDirX() / (abs(p->getDirX()) + abs(p->getDirZ()));
-      coeffZ = - p->getDirZ() / (abs(p->getDirX()) + abs(p->getDirZ()));
+      coeffX = p->getDirX() / (absF(p->getDirX()) + absF(p->getDirZ()));
+      coeffZ = - p->getDirZ() / (absF(p->getDirX()) + absF(p->getDirZ()));
       break;
 	case 6:
-      coeffZ = - p->getDirZ() / (abs(p->getDirZ()) + abs(p->getDirY()));
-      coeffX = p->getDirY() / (abs(p->getDirZ()) + abs(p->getDirY()));
+      coeffZ = - p->getDirZ() / (absF(p->getDirZ()) + absF(p->getDirY()));
+      coeffX = p->getDirY() / (absF(p->getDirZ()) + absF(p->getDirY()));
       break;
-	}
+    }
 
     float relativeSpeed = msSinceLastUpdate / 1000.0 * p->getSpeed();
 
@@ -215,7 +215,7 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
 		if(!this->modif)
           this->modif = true;
       }
-	}
+    }
 
     float playerRadius = p->getWidth() * RATIO;
 	float realMaxField = field.maxX - playerRadius;
@@ -519,7 +519,7 @@ void GameEngine::updateProjectiles(int msSinceLastUpdate){
       p->setOldPosY(p->getPosY());
       p->setOldPosZ(p->getPosZ());
 
-      sumCoeff = abs(p->getDirX()) + abs(p->getDirY()) + abs(p->getDirZ());
+      sumCoeff = absF(p->getDirX()) + absF(p->getDirY()) + absF(p->getDirZ());
       coeffX = p->getDirX() / sumCoeff;
       coeffY = p->getDirY() / sumCoeff;
       coeffZ = p->getDirZ() / sumCoeff;
@@ -918,7 +918,9 @@ bool GameEngine::colidePlayerObstacle(Player *p1, Obstacle *){
   return true;
 }
 
-
+float GameEngine::absF(float value){
+  return value >= 0 ? value : value * -1;
+}
 
 
 
