@@ -51,9 +51,15 @@ private:
     void updateProjectiles(int msSinceLastUpdate);
     void manageColisions();
 
-    bool colide(GameObject *o1, GameObject *o2);
+    bool processColision(GameObject *o1, GameObject *o2);
+    bool processColision(Sphere *s1, Sphere *s2);
+    bool processColision(Sphere *s, Cuboid *c);
+
     bool colide(Sphere *s1, Sphere *s2);
     bool colide(Sphere *s, Cuboid *c);
+
+    bool approximateColision(Sphere *s1, Sphere *s2);
+    bool approximateColision(Sphere *s, Cuboid *c);
 
     bool colidePlayerProjectile(Player *pl, Projectile *pr);
     bool colidePlayerPlayer(Player *p1, Player *p2);

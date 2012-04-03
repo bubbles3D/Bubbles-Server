@@ -1,4 +1,5 @@
 #include "projectile.h"
+#include "server.h"
 
 Projectile::Projectile(Player * playerOwner) : Sphere(playerOwner){
     this->owner = playerOwner;
@@ -19,6 +20,8 @@ Projectile::Projectile(Player * playerOwner) : Sphere(playerOwner){
 
 void Projectile::explode(){
     this->owner->projectiles.removeOne(this);
+
+    Server::getServer()->addObjectToClear(this->id);
 
     this->deleteLater();
 }

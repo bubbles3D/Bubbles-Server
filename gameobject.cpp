@@ -3,8 +3,8 @@
 int GameObject::idCounter = 0;
 
 GameObject::GameObject(QObject *parent) : QObject(parent){
-    this->id = idCounter;
-    idCounter++;
+  this->id = idCounter;
+  idCounter++;
 }
 
 QMap<QString, QString> & GameObject::getModifiedProperties(){
@@ -17,8 +17,10 @@ float GameObject::getPosX(){
 }
 
 void GameObject::setPosX(float posX){
-  this->posX = posX;
-  this->modifiedProperties.insert("posX", QString::number(posX));
+  if(this->posX != posX){
+    this->posX = posX;
+    this->modifiedProperties.insert("posX", QString::number(posX));
+  }
 }
 
 float GameObject::getPosY(){
@@ -26,8 +28,10 @@ float GameObject::getPosY(){
 }
 
 void GameObject::setPosY(float posY){
-  this->posY = posY;
-  this->modifiedProperties.insert("posY", QString::number(posY));
+  if(this->posY != posY){
+    this->posY = posY;
+    this->modifiedProperties.insert("posY", QString::number(posY));
+  }
 }
 
 float GameObject::getPosZ(){
@@ -35,8 +39,10 @@ float GameObject::getPosZ(){
 }
 
 void GameObject::setPosZ(float posZ){
-  this->posZ = posZ;
-  this->modifiedProperties.insert("posZ", QString::number(posZ));
+  if(this->posZ != posZ){
+    this->posZ = posZ;
+    this->modifiedProperties.insert("posZ", QString::number(posZ));
+  }
 }
 
 float GameObject::getOldPosX(){
@@ -44,8 +50,10 @@ float GameObject::getOldPosX(){
 }
 
 void GameObject::setOldPosX(float oldPosX){
-  this->oldPosX = oldPosX;
-  this->modifiedProperties.insert("oldPosX", QString::number(oldPosX));
+  if(this->oldPosX != oldPosX){
+    this->oldPosX = oldPosX;
+    this->modifiedProperties.insert("oldPosX", QString::number(oldPosX));
+  }
 }
 
 float GameObject::getOldPosY(){
@@ -53,8 +61,10 @@ float GameObject::getOldPosY(){
 }
 
 void GameObject::setOldPosY(float oldPosY){
-  this->oldPosY = oldPosY;
-  this->modifiedProperties.insert("oldPosY", QString::number(oldPosY));
+  if(this->oldPosY != oldPosY){
+    this->oldPosY = oldPosY;
+    this->modifiedProperties.insert("oldPosY", QString::number(oldPosY));
+  }
 }
 
 float GameObject::getOldPosZ(){
@@ -62,8 +72,10 @@ float GameObject::getOldPosZ(){
 }
 
 void GameObject::setOldPosZ(float oldPosZ){
-  this->oldPosZ = oldPosZ;
-  this->modifiedProperties.insert("oldPosZ", QString::number(oldPosZ));
+  if(this->oldPosZ != oldPosZ){
+    this->oldPosZ = oldPosZ;
+    this->modifiedProperties.insert("oldPosZ", QString::number(oldPosZ));
+  }
 }
 
 float GameObject::getDirX(){
@@ -71,8 +83,10 @@ float GameObject::getDirX(){
 }
 
 void GameObject::setDirX(float dirX){
-  this->dirX = dirX;
-  this->modifiedProperties.insert("dirX", QString::number(dirX));
+  if(this->dirX != dirX){
+    this->dirX = dirX;
+    this->modifiedProperties.insert("dirX", QString::number(dirX));
+  }
 }
 
 float GameObject::getDirY(){
@@ -80,8 +94,10 @@ float GameObject::getDirY(){
 }
 
 void GameObject::setDirY(float dirY){
-  this->dirY = dirY;
-  this->modifiedProperties.insert("dirY", QString::number(dirY));
+  if(this->dirY != dirY){
+    this->dirY = dirY;
+    this->modifiedProperties.insert("dirY", QString::number(dirY));
+  }
 }
 
 float GameObject::getDirZ(){
@@ -89,8 +105,10 @@ float GameObject::getDirZ(){
 }
 
 void GameObject::setDirZ(float dirZ){
-  this->dirZ = dirZ;
-  this->modifiedProperties.insert("dirZ", QString::number(dirZ));
+  if(this->dirZ != dirZ){
+    this->dirZ = dirZ;
+    this->modifiedProperties.insert("dirZ", QString::number(dirZ));
+  }
 }
 
 float GameObject::getWidth(){
@@ -98,8 +116,10 @@ float GameObject::getWidth(){
 }
 
 void GameObject::setWidth(float width){
-  this->width = width;
-  this->modifiedProperties.insert("width", QString::number(width));
+  if(this->width != width){
+    this->width = width;
+    this->modifiedProperties.insert("width", QString::number(width));
+  }
 }
 
 float GameObject::getHeight(){
@@ -107,8 +127,10 @@ float GameObject::getHeight(){
 }
 
 void GameObject::setHeight(float height){
-  this->height = height;
-  this->modifiedProperties.insert("height", QString::number(height));
+  if(this->height != height){
+    this->height = height;
+    this->modifiedProperties.insert("height", QString::number(height));
+  }
 }
 
 float GameObject::getLength(){
@@ -116,8 +138,10 @@ float GameObject::getLength(){
 }
 
 void GameObject::setLength(float length){
-  this->length = length;
-  this->modifiedProperties.insert("length", QString::number(length));
+  if(this->length != length){
+    this->length = length;
+    this->modifiedProperties.insert("length", QString::number(length));
+  }
 }
 
 int GameObject::getColorRED(){
@@ -125,8 +149,10 @@ int GameObject::getColorRED(){
 }
 
 void GameObject::setColorRED(int colorRED){
-  this->colorRED = colorRED;
-  this->modifiedProperties.insert("colorRED", QString::number(colorRED));
+  if(this->colorRED != colorRED){
+    this->colorRED = colorRED;
+    this->modifiedProperties.insert("colorRED", QString::number(colorRED));
+  }
 }
 
 int GameObject::getColorGREEN(){
@@ -134,8 +160,10 @@ int GameObject::getColorGREEN(){
 }
 
 void GameObject::setColorGREEN(int colorGREEN){
-  this->colorGREEN = colorGREEN;
-  this->modifiedProperties.insert("colorGREEN", QString::number(colorGREEN));
+  if(this->colorGREEN != colorGREEN){
+    this->colorGREEN = colorGREEN;
+    this->modifiedProperties.insert("colorGREEN", QString::number(colorGREEN));
+  }
 }
 
 int GameObject::getColorBLUE(){
@@ -143,6 +171,8 @@ int GameObject::getColorBLUE(){
 }
 
 void GameObject::setColorBLUE(int colorBLUE){
-  this->colorBLUE = colorBLUE;
-  this->modifiedProperties.insert("colorBLUE", QString::number(colorBLUE));
+  if(this->colorBLUE != colorBLUE){
+    this->colorBLUE = colorBLUE;
+    this->modifiedProperties.insert("colorBLUE", QString::number(colorBLUE));
+  }
 }

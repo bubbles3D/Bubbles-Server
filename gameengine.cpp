@@ -22,12 +22,12 @@ void GameEngine::updateObjects(){
   updateProjectiles(msSinceLastUpdate);
   manageColisions();
 
-  if(this->modif) {
-	//qDebug() << this->modif;
-	server->sendUpdateToPlayers();
+ // if(this->modif) {
+    //qDebug() << this->modif;
+    server->sendUpdateToPlayers();
 
-	this->modif = false;
-  }
+//	this->modif = false;
+ // }
 
   int span = msIdealUpdate - time.restart();
 
@@ -531,8 +531,7 @@ void GameEngine::updateProjectiles(int msSinceLastUpdate){
       p->setPosZ(p->getPosZ() + relativeSpeed * coeffZ);
 
       if(p->getPosX() < 0 || p->getPosY() < 0 || p->getPosZ() < 0 || p->getPosX() > field.maxX || p->getPosY() > field.maxY ||p->getPosZ() > field.maxZ ){
-		pl->projectiles.removeOne(p);
-		p->deleteLater();
+        p->explode();
       }
 
       if(!this->modif)
@@ -545,42 +544,70 @@ Field & GameEngine::getField(){
   return this->field;
 }
 
-bool GameEngine::colide(GameObject *o1, GameObject *o2){
+bool GameEngine::processColision(GameObject *o1, GameObject *o2){
 
   if(dynamic_cast<Sphere*>(o1) != NULL && dynamic_cast<Sphere*>(o2) != NULL){
-	return colide((Sphere*) o1, (Sphere*) o2);
+    return processColision((Sphere*) o1, (Sphere*) o2);
   } else if(dynamic_cast<Sphere*>(o1) != NULL && dynamic_cast<Cuboid*>(o2) != NULL){
-	return colide((Sphere*) o1, (Cuboid*) o2);
+    return processColision((Sphere*) o1, (Cuboid*) o2);
   } else if(dynamic_cast<Cuboid*>(o1) != NULL && dynamic_cast<Sphere*>(o2) != NULL) {
-	return colide((Sphere*) o2, (Cuboid*) o1);
+    return processColision((Sphere*) o2, (Cuboid*) o1);
   }
 
   return false;
 }
 
-bool GameEngine::colide(Sphere *s1, Sphere *s2){
-  float d = sqrt(pow(s1->getPosX() - s2->getPosX(), 2) + pow(s1->getPosY() - s2->getPosY(), 2) + pow(s1->getPosZ() - s2->getPosZ(), 2));
-
+bool GameEngine::processColision(Sphere *s1, Sphere *s2){
   bool b = false;
 
-  if(d < s1->getRealDiameter() + s2->getRealDiameter()){
-	//Player - Projectile
-	if(dynamic_cast<Projectile*>(s1) != NULL && dynamic_cast<Player*>(s2) != NULL){
+  if(colide(s1, s2) || approximateColision(s1, s2)){
+
+    //Player - Projectile
+    if(dynamic_cast<Projectile*>(s1) != NULL && dynamic_cast<Player*>(s2) != NULL){
       b = colidePlayerProjectile(dynamic_cast<Player*>(s2), dynamic_cast<Projectile*>(s1));
-	} else if(dynamic_cast<Player*>(s1) != NULL && dynamic_cast<Projectile*>(s2) != NULL){
+    } else if(dynamic_cast<Player*>(s1) != NULL && dynamic_cast<Projectile*>(s2) != NULL){
       b = colidePlayerProjectile(dynamic_cast<Player*>(s1), dynamic_cast<Projectile*>(s2));
 
       //Player - Player
-	} else if(dynamic_cast<Player*>(s1) != NULL && dynamic_cast<Player*>(s2) != NULL){
+    } else if(dynamic_cast<Player*>(s1) != NULL && dynamic_cast<Player*>(s2) != NULL){
       b = colidePlayerPlayer(dynamic_cast<Player*>(s1), dynamic_cast<Player*>(s2));
 
       //Projectile - Projectile
-	} else if (dynamic_cast<Projectile*>(s1) != NULL && dynamic_cast<Projectile*>(s2) != NULL){
+    } else if (dynamic_cast<Projectile*>(s1) != NULL && dynamic_cast<Projectile*>(s2) != NULL){
       b = colideProjectileProjectile(dynamic_cast<Projectile*>(s1), dynamic_cast<Projectile*>(s2));
-	}
+    }
+
   }
 
   return b;
+}
+
+bool GameEngine::processColision(Sphere *s, Cuboid *c){
+  bool b = false;
+
+  if(colide(s, c)){
+
+    //Player - Projectile
+    if(dynamic_cast<Projectile*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
+      b = colideProjectileObstacle(dynamic_cast<Projectile*>(s), dynamic_cast<Obstacle*>(c));
+
+      //Player - Player
+    } else if(dynamic_cast<Player*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
+      b = colidePlayerObstacle(dynamic_cast<Player*>(s), dynamic_cast<Obstacle*>(c));
+    }
+  }
+
+  return b;
+}
+
+bool GameEngine::colide(Sphere *s1, Sphere *s2){
+  float d = sqrt(pow(s1->getPosX() - s2->getPosX(), 2) + pow(s1->getPosY() - s2->getPosY(), 2) + pow(s1->getPosZ() - s2->getPosZ(), 2));
+
+  if(d < s1->getRealDiameter() + s2->getRealDiameter()){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 bool GameEngine::colide(Sphere *s, Cuboid *c){
@@ -614,20 +641,160 @@ bool GameEngine::colide(Sphere *s, Cuboid *c){
 
   float d = sqrt(pow(s->getPosX() - pX, 2) + pow(s->getPosY() - pY, 2) + pow(s->getPosZ() - pZ, 2));
 
-  bool b = false;
-
   if(d < s->getRealDiameter()){
-	//Player - Projectile
-	if(dynamic_cast<Projectile*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
-      b = colideProjectileObstacle(dynamic_cast<Projectile*>(s), dynamic_cast<Obstacle*>(c));
+    return true;
+  } else {
+    return false;
+  }
+}
 
-      //Player - Player
-	} else if(dynamic_cast<Player*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
-      b = colidePlayerObstacle(dynamic_cast<Player*>(s), dynamic_cast<Obstacle*>(c));
-	}
+bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
+  float s1dx = s1->getPosX() - s1->getOldPosX();
+  float s1dy = s1->getPosY() - s1->getOldPosY();
+  float s1dz = s1->getPosZ() - s1->getOldPosZ();
+
+  float s2dx = s2->getPosX() - s2->getOldPosX();
+  float s2dy = s2->getPosY() - s2->getOldPosY();
+  float s2dz = s2->getPosZ() - s2->getOldPosZ();
+
+  float dS1 = sqrt(pow(s1dx, 2) + pow(s1dy, 2) + pow(s1dz, 2));
+  float dS2 = sqrt(pow(s2dx, 2) + pow(s2dy, 2) + pow(s2dz, 2));
+
+  float ux;
+  float uy;
+  float uz;
+
+  float vx;
+  float vy;
+  float vz;
+
+  float ox;
+  float oy;
+  float oz;
+
+  float wx;
+  float wy;
+  float wz;
+
+  float d = INT_MAX;
+
+  if(dS1 > 0 || dS2 > 0){
+    if(dS1 >= dS2){
+      ux = s1dx;
+      uy = s1dy;
+      uz = s1dz;
+
+      ox = s2->getPosX();
+      oy = s2->getPosY();
+      oz = s2->getPosZ();
+
+      vx = ox - s1->getPosX();
+      vy = oy - s1->getPosY();
+      vz = oz - s1->getPosZ();
+
+      wx = s2->getPosX() - s1->getOldPosX();
+      wy = s2->getPosY() - s1->getOldPosY();
+      wz = s2->getPosZ() - s1->getOldPosZ();
+    } else {
+      ux = s2dx;
+      uy = s2dy;
+      uz = s2dz;
+
+      ox = s1->getPosX();
+      oy = s1->getPosY();
+      oz = s1->getPosZ();
+
+      vx = ox - s2->getPosX();
+      vy = oy - s2->getPosY();
+      vz = oz - s2->getPosZ();
+
+      wx = s1->getPosX() - s2->getOldPosX();
+      wy = s1->getPosY() - s2->getOldPosY();
+      wz = s1->getPosZ() - s2->getOldPosZ();
+    }
+
+    float pdx = vy * uz - vz * uy;
+    float pdy = vz * ux - vx * uz;
+    float pdz = vx * uy - vy * ux;
+
+    float d2 = (pow(pdx, 2) + pow(pdy, 2) + pow(pdz, 2)) / (pow(ux, 2) + pow(uy, 2) + pow(uz, 2));
+    float r2 = pow(wx, 2) + pow(wy, 2) + pow(wz, 2) - d2;
+
+    float normU =  sqrt(pow(ux, 2)+pow(uy, 2)+pow(uz, 2));
+
+    float mx;
+    float my;
+    float mz;
+
+    if(+ux*wx + uy*wy + uz*wz >= 0){
+      //L'objet est au niveau du segment ou après pos
+      if(vx*ux + vy*uy +vz*uz < 0){
+        // L'objet est au niveau du segment
+        if(dS1 >= dS2){
+          mx =s1->getOldPosX() + (sqrt(r2) * ux/normU);
+          my =s1->getOldPosY() + (sqrt(r2) * uy/normU);
+          mz =s1->getOldPosZ() + (sqrt(r2) * uz/normU);
+        }else{
+          mx =s2->getOldPosX() + (sqrt(r2) * ux/normU);
+          my =s2->getOldPosY() + (sqrt(r2) * uy/normU);
+          mz =s2->getOldPosZ() + (sqrt(r2) * uz/normU);
+        }
+
+        //qDebug()<<"SEGMENT!!!!";
+      }else{
+        // L'objet est après pos
+        if(dS1 >= dS2){
+          mx = s1->getPosX();
+          my = s1->getPosY();
+          mz = s1->getPosZ();
+        } else {
+          mx = s2->getPosX();
+          my = s2->getPosY();
+          mz = s2->getPosZ();
+        }
+        //qDebug()<<"Apres pos!!!!";
+      }
+
+    }else{
+      //L'objet est derriere oldPos
+      if(dS1 >= dS2){
+        mx = s1->getOldPosX();
+        my = s1->getOldPosY();
+        mz = s1->getOldPosZ();
+      } else {
+        mx = s2->getOldPosX();
+        my = s2->getOldPosY();
+        mz = s2->getOldPosZ();
+      }
+      //qDebug()<<"Derriere pos!!!!";
+    }
+
+
+    d = sqrt(pow(mx - ox, 2) + pow(my - oy, 2) + pow(mz - oz, 2));
+
+    //qDebug() << "O " << ox << " " <<oy<< " " << oz;
+    //qDebug() << "M " << mx << " " <<my << " " << mz;
+    //qDebug() << "D " << sqrt(d2);
+    //qDebug() << "W " << wx << " " <<wy << " " << wz;
+    //qDebug() << "r " << sqrt(r2);
+    //qDebug() << "d: " << d << " = " << (s1->getRealDiameter() + s2->getRealDiameter()) << " " << dS1 << " " << dS2;
+    //qDebug() << "Distance " << sqrt(pow(mx - ox, 2) + pow(my - oy, 2) + pow(mz - oz, 2));
+    //qDebug() << "Segment " << (mx - ox) <<" "<< (my - oy) << " " << mz - oz;
+    //qDebug() << "M " << (mx) <<" "<< my << " " << mz;
+
+    //if(dS1 >= dS2){
+    //  qDebug() << "POS " << s1->getPosX() <<" "<< s1->getPosY() << " " << s1->getPosZ();
+    //}else{
+    //  qDebug() << "POS " << s2->getPosX() <<" "<< s2->getPosY() << " " << s2->getPosZ();
+    //}
+    //qDebug() << "OBJET " <<  ox <<" "<< oy << " " << oz;
   }
 
-  return b;
+  return d <= s1->getRealDiameter() + s2->getRealDiameter();
+}
+
+bool GameEngine::approximateColision(Sphere *s, Cuboid *c){
+  return false;
 }
 
 void GameEngine::manageColisions(){
@@ -651,7 +818,7 @@ void GameEngine::manageColisions(){
   //Static - Dynamic
   foreach(GameObject* o1, staticObjects){
     foreach(GameObject* o2, dynamicObjects){
-      if(o1 != o2 && colide(o1, o2)){
+      if(o1 != o2 && processColision(o1, o2)){
         //qDebug() << "COLIDEEEEEEEEEEE ";
       }
     }
@@ -662,7 +829,7 @@ void GameEngine::manageColisions(){
   //Dynamic - Dynamic
   for(i = 0; i < dynamicObjects.length(); ++i){
     for(j = i + 1; j < dynamicObjects.length(); ++j){
-      if(colide(dynamicObjects[i], dynamicObjects[j])){
+      if(processColision(dynamicObjects[i], dynamicObjects[j])){
         //qDebug() << "COLIDEEEEEEEEEEE ";
       }
     }
@@ -687,7 +854,7 @@ bool GameEngine::colideObject(GameObject* ob){
   }
 
   foreach(GameObject* o1, objects){
-	if(o1 != ob && colide(o1, ob)){
+    if(o1 != ob && processColision(o1, ob)){
       qDebug() << "COLIDEEEEEEEEEEE ";
       return true;
 	}
@@ -726,12 +893,12 @@ bool GameEngine::colidePlayerPlayer(Player *p1, Player *p2){
 
 bool GameEngine::colideProjectileProjectile(Projectile *p1, Projectile *p2){
   //if(p1->owner != p2->owner){
-	p1->explode();
-	p2->explode();
+  p1->explode();
+  p2->explode();
 
-	return true;
+  return true;
   //} else {
-    //return false;
+  //return false;
   //}
 }
 

@@ -31,6 +31,7 @@ void Field::setRespawnPos(Player & p){
 
 void Field::regenerateMap(){
   foreach(Obstacle *o, this->obstacles){
+    Server::getServer()->addObjectToClear(o->id);
 	o->deleteLater();
   }
 

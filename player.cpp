@@ -111,7 +111,10 @@ QString Player::getName(){
 }
 
 void Player::setName(QString name){
-  this->name = name;
+  if(this->name != name){
+    this->name = name;
+    this->modifiedProperties.insert("name", name);
+  }
 }
 
 bool Player::getKeyForwards(){
@@ -119,7 +122,10 @@ bool Player::getKeyForwards(){
 }
 
 void Player::setKeyForwards(bool keyForwards){
-  this->keyForwards = keyForwards;
+  if(this->keyForwards != keyForwards){
+    this->keyForwards = keyForwards;
+    this->modifiedProperties.insert("keyForwards", keyForwards ? "true" : "false");
+  }
 }
 
 bool Player::getKeyBackwards(){
@@ -127,7 +133,10 @@ bool Player::getKeyBackwards(){
 }
 
 void Player::setKeyBackwards(bool keyBackwards){
-  this->keyBackwards = keyBackwards;
+  if(this->keyBackwards != keyBackwards){
+    this->keyBackwards = keyBackwards;
+    this->modifiedProperties.insert("keyBackwards", keyBackwards ? "true" : "false");
+  }
 }
 
 bool Player::getKeyLeft(){
@@ -135,7 +144,10 @@ bool Player::getKeyLeft(){
 }
 
 void Player::setKeyLeft(bool keyLeft){
-  this->keyLeft = keyLeft;
+  if(this->keyLeft != keyLeft){
+    this->keyLeft = keyLeft;
+    this->modifiedProperties.insert("keyLeft", keyLeft ? "true" : "false");
+  }
 }
 
 bool Player::getKeyRight(){
@@ -143,7 +155,10 @@ bool Player::getKeyRight(){
 }
 
 void Player::setKeyRight(bool keyRight){
-  this->keyRight = keyRight;
+  if(this->keyRight != keyRight){
+    this->keyRight = keyRight;
+    this->modifiedProperties.insert("keyRight", keyRight ? "true" : "false");
+  }
 }
 
 int Player::getSpeed(){
@@ -151,7 +166,10 @@ int Player::getSpeed(){
 }
 
 void Player::setSpeed(int speed){
-  this->speed = speed;
+  if(this->speed != speed){
+    this->speed = speed;
+    this->modifiedProperties.insert("speed", QString::number(speed));
+  }
 }
 
 int Player::getLife(){
@@ -159,7 +177,10 @@ int Player::getLife(){
 }
 
 void Player::setLife(int life){
-  this->life = life;
+  if(this->life != life){
+    this->life = life;
+    this->modifiedProperties.insert("life", QString::number(life));
+  }
 }
 
 int Player::getDeads(){
@@ -167,7 +188,10 @@ int Player::getDeads(){
 }
 
 void Player::setDeads(int deads){
-  this->deads = deads;
+  if(this->deads != deads){
+    this->deads = deads;
+    this->modifiedProperties.insert("deads", QString::number(deads));
+  }
 }
 
 int Player::getKills(){
@@ -175,7 +199,10 @@ int Player::getKills(){
 }
 
 void Player::setKills(int kills){
-  this->kills = kills;
+  if(this->kills != kills){
+    this->kills = kills;
+    this->modifiedProperties.insert("kills", QString::number(kills));
+  }
 }
 
 int Player::getCube(){
@@ -183,5 +210,8 @@ int Player::getCube(){
 }
 
 void Player::setCube(int cube){
-  this->cube = cube;
+  if(this->cube != cube){
+    this->cube = cube;
+    this->modifiedProperties.insert("cube", QString::number(cube));
+  }
 }

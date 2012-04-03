@@ -29,6 +29,8 @@ public:
 
     GameEngine & getGameEngine();
 
+    void addObjectToClear(int id);
+
 signals:
 
 public slots:
@@ -43,6 +45,8 @@ private:
 
     GameEngine * g;
 
+    QList<int> toClear;
+
     void sendToAllPlayers(QByteArray & packet);
     void sendToPlayer(Player & p, QByteArray & packet);
 
@@ -52,9 +56,10 @@ private:
 
     QByteArray forgeInit();
     QByteArray forgeUpdate();
-    void forgePlayersInfo(QVariantMap & packet);
-    void forgeProjectilesInfo(QVariantMap & packet);
+    void forgePlayersInfo(QVariantMap & packet, bool force = false);
+    void forgeProjectilesInfo(QVariantMap & packet, bool force = false);
     void forgeFieldInfo(QVariantMap & packet);
+    void forgeToClearInfo(QVariantMap & packet);
 
 private slots:
     void playerConnected();

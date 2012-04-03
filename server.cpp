@@ -16,12 +16,12 @@ Server::Server(QObject *parent, int port) : QTcpServer(parent), port(port){
 }
 
 void Server::init(){
-  if (!listen(QHostAddress::Any, this->port)) { // Démarrage du serveur sur toutes les IP disponibles
+  if (!listen(QHostAddress::Any, this->port)) { // Demarrage du serveur sur toutes les IP disponibles
 
-	// Si le serveur n'a pas été démarré correctement
+    // Si le serveur n'a pas ete demarre correctement
 	qDebug() << "Le serveur n'a pas pu etre demarre. Raison :" + errorString();
   } else {
-	// Si le serveur a été démarré correctement
+    // Si le serveur a ete demarre correctement
 
 	//qDebug() << ;
 	Logger::log("Le serveur a ete demarre sur ", Logger::INIT);
@@ -68,6 +68,11 @@ void Server::playerDisconnected(){
 
   Player *p = this->players[socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())];
   this->players.remove(socket->peerAddress().toString() + ":" + QString::number(socket->peerPort()));
+
+  this->toClear << p->id;
+
+  p->deleteLater();
+
   delete p;
 }
 
@@ -182,30 +187,39 @@ void Server::processRequest(Player &p, QString req){
 QByteArray Server::forgeInit(){
 
   QVariantMap packet;
+  QByteArray json;
 
   forgeFieldInfo(packet);
-  forgePlayersInfo(packet);
-  forgeProjectilesInfo(packet);
+  forgePlayersInfo(packet, true);
+  forgeProjectilesInfo(packet, true);
 
-  QJson::Serializer serializer;
-  QByteArray json = serializer.serialize(packet);
+  if(packet.size() > 0){
+    QJson::Serializer serializer;
+    json = serializer.serialize(packet);
 
-  json.append("$$");
+    json.append("$$");
+  }
 
   return json;
+
+
 }
 
 QByteArray Server::forgeUpdate(){
 
   QVariantMap packet;
+  QByteArray json;
 
   forgePlayersInfo(packet);
   forgeProjectilesInfo(packet);
+  forgeToClearInfo(packet);
 
-  QJson::Serializer serializer;
-  QByteArray json = serializer.serialize(packet);
+  if(packet.size() > 0){
+    QJson::Serializer serializer;
+    json = serializer.serialize(packet);
 
-  json.append("$$");
+    json.append("$$");
+  }
 
   return json;
 }
@@ -238,100 +252,93 @@ void Server::forgeFieldInfo(QVariantMap & packet){
   packet.insert("field", fld);
 }
 
-void Server::forgePlayersInfo(QVariantMap & packet){
+void Server::forgePlayersInfo(QVariantMap & packet, bool force){
 
   QVariantList pls;
 
   foreach(Player *p, this->players){
-    //if(pr->getModifiedProperties().size() > 0 ) {
+    if(force || p->getModifiedProperties().size() > 0 ) {
 
-	QVariantMap player;
+      QVariantMap player;
 
-    player.insert("id", p->id);
-    player.insert("name", p->getName());
-    player.insert("x", (double)p->getPosX());
-    player.insert("y", (double)p->getPosY());
-    player.insert("z", (double)p->getPosZ());
-    player.insert("vx", (double)p->getDirX());
-    player.insert("vy", (double)p->getDirY());
-    player.insert("vz", (double)p->getDirZ());
-    player.insert("life", p->getLife());
-    player.insert("deaths", p->getDeads());
-    player.insert("kills", p->getKills());
-    player.insert("w", (double)p->getWidth());
-    player.insert("h", (double)p->getHeight());
-    player.insert("l", (double)p->getLength());
-    player.insert("cube", p->getCube());
+      player.insert("id", p->id);
+      if(force || p->getModifiedProperties().contains("name")) player.insert("name", p->getName());
+      if(force || p->getModifiedProperties().contains("posX")) player.insert("x", (double)p->getPosX());
+      if(force || p->getModifiedProperties().contains("posY")) player.insert("y", (double)p->getPosY());
+      if(force || p->getModifiedProperties().contains("posZ")) player.insert("z", (double)p->getPosZ());
+      if(force || p->getModifiedProperties().contains("dirX")) player.insert("vx", (double)p->getDirX());
+      if(force || p->getModifiedProperties().contains("dirY")) player.insert("vy", (double)p->getDirY());
+      if(force || p->getModifiedProperties().contains("dirZ")) player.insert("vz", (double)p->getDirZ());
+      if(force || p->getModifiedProperties().contains("life")) player.insert("life", p->getLife());
+      if(force || p->getModifiedProperties().contains("deaths")) player.insert("deaths", p->getDeads());
+      if(force || p->getModifiedProperties().contains("kills")) player.insert("kills", p->getKills());
+      if(force || p->getModifiedProperties().contains("width")) player.insert("w", (double)p->getWidth());
+      if(force || p->getModifiedProperties().contains("height")) player.insert("h", (double)p->getHeight());
+      if(force || p->getModifiedProperties().contains("length")) player.insert("l", (double)p->getLength());
+      if(force || p->getModifiedProperties().contains("cube")) player.insert("cube", p->getCube());
 
-    /*
-    player.insert("id", p->id);
-    if(p->getModifiedProperties().contains("name")) player.insert("name", p->getName());
-    if(p->getModifiedProperties().contains("posX")) player.insert("x", (double)p->getPosX());
-    if(p->getModifiedProperties().contains("posY")) player.insert("y", (double)p->getPosY());
-    if(p->getModifiedProperties().contains("posZ")) player.insert("z", (double)p->getPosZ());
-    if(p->getModifiedProperties().contains("dirX")) player.insert("vx", (double)p->getDirX());
-    if(p->getModifiedProperties().contains("dirY")) player.insert("vy", (double)p->getDirY());
-    if(p->getModifiedProperties().contains("dirZ")) player.insert("vz", (double)p->getDirZ());
-    if(p->getModifiedProperties().contains("life")) player.insert("life", p->getLife());
-    if(p->getModifiedProperties().contains("deaths")) player.insert("deaths", p->getDeads());
-    if(p->getModifiedProperties().contains("kills")) player.insert("kills", p->getKills());
-    if(p->getModifiedProperties().contains("width")) player.insert("w", (double)p->getWidth());
-    if(p->getModifiedProperties().contains("height")) player.insert("h", (double)p->getHeight());
-    if(p->getModifiedProperties().contains("length")) player.insert("l", (double)p->getLength());
-    if(p->getModifiedProperties().contains("cube")) player.insert("cube", p->getCube());
-    */
+      p->getModifiedProperties().clear();
 
-	pls << player;
+      if(player.size() > 1){ //Si on a donné autre chose que l'id..
+        pls << player;
+      }
 
-    //}
+    }
   }
 
-  packet.insert("players", pls);
+  if(pls.size() > 0){
+    packet.insert("players", pls);
+  }
 }
 
-void Server::forgeProjectilesInfo(QVariantMap & packet){
+void Server::forgeProjectilesInfo(QVariantMap & packet, bool force){
   QVariantList pro;
 
   foreach(Player *p, this->players){
     foreach(Projectile *pr, p->projectiles){
-      //if(pr->getModifiedProperties().size() > 0 ) {
+      if(force || pr->getModifiedProperties().size() > 0 ) {
 
-      QVariantMap projectile;
+        QVariantMap projectile;
 
-      projectile.insert("id", pr->id);
-      projectile.insert("player", p->getName());
-      projectile.insert("x", (double)pr->getPosX());
-      projectile.insert("y", (double)pr->getPosY());
-      projectile.insert("z", (double)pr->getPosZ());
-      projectile.insert("vx", (double)pr->getDirX());
-      projectile.insert("vy", (double)pr->getDirY());
-      projectile.insert("vz", (double)pr->getDirZ());
-      projectile.insert("w", (double)pr->getWidth());
-      projectile.insert("h", (double)pr->getHeight());
-      projectile.insert("l", (double)pr->getLength());
+        projectile.insert("id", pr->id);
+        if(force || pr->getModifiedProperties().contains("posX")) projectile.insert("x", (double)pr->getPosX());
+        if(force || pr->getModifiedProperties().contains("posY")) projectile.insert("y", (double)pr->getPosY());
+        if(force || pr->getModifiedProperties().contains("posZ")) projectile.insert("z", (double)pr->getPosZ());
+        if(force || pr->getModifiedProperties().contains("dirX")) projectile.insert("vx", (double)pr->getDirX());
+        if(force || pr->getModifiedProperties().contains("dirY")) projectile.insert("vy", (double)pr->getDirY());
+        if(force || pr->getModifiedProperties().contains("dirZ")) projectile.insert("vz", (double)pr->getDirZ());
+        if(force || pr->getModifiedProperties().contains("width")) projectile.insert("w", (double)pr->getWidth());
+        if(force || pr->getModifiedProperties().contains("height")) projectile.insert("h", (double)pr->getHeight());
+        if(force || pr->getModifiedProperties().contains("length")) projectile.insert("l", (double)pr->getLength());
 
-      /*
-      projectile.insert("id", pr->id);
-      if(pr->getModifiedProperties().contains("posX")) projectile.insert("x", (double)pr->getPosX());
-      if(pr->getModifiedProperties().contains("posY")) projectile.insert("y", (double)pr->getPosY());
-      if(pr->getModifiedProperties().contains("posZ")) projectile.insert("z", (double)pr->getPosZ());
-      if(pr->getModifiedProperties().contains("dirX")) projectile.insert("vx", (double)pr->getDirX());
-      if(pr->getModifiedProperties().contains("dirY")) projectile.insert("vy", (double)pr->getDirY());
-      if(pr->getModifiedProperties().contains("dirZ")) projectile.insert("vz", (double)pr->getDirZ());
-      if(pr->getModifiedProperties().contains("width")) projectile.insert("w", (double)pr->getWidth());
-      if(pr->getModifiedProperties().contains("height")) projectile.insert("h", (double)pr->getHeight());
-      if(pr->getModifiedProperties().contains("length")) projectile.insert("l", (double)pr->getLength());
+        pr->getModifiedProperties().clear();
 
-      pr->getModifiedProperties().clear();
-      */
+        if(projectile.size() > 1){ //Si on a donné autre chose que l'id..
+          pro << projectile;
+        }
 
-      pro << projectile;
-
-      //}
+      }
 	}
   }
 
-  packet.insert("bullets", pro);
+  if(pro.size() > 0){
+    packet.insert("bullets", pro);
+  }
+}
+
+
+void Server::forgeToClearInfo(QVariantMap & packet){
+  QVariantList pro;
+
+  foreach(int i, this->toClear){
+    pro << i;
+  }
+
+  this->toClear.clear();
+
+  if(pro.size() > 0){
+    packet.insert("toClear", pro);
+  }
 }
 
 void Server::sendToAllPlayers(QByteArray & packet){
@@ -355,9 +362,11 @@ void Server::sendUpdateToPlayers(){
 
   r = forgeUpdate();
 
-  sendToAllPlayers(r);
+  if(r.size() > 0){
+    sendToAllPlayers(r);
 
-  //qDebug() << " : Requette envoyée : \n" + r;
+    qDebug() << " : Requette envoyee : \n" + r;
+  }
 }
 
 void Server::sendInitToPlayer(Player & p){
@@ -369,11 +378,16 @@ void Server::sendInitToPlayer(Player & p){
 
   sendUpdateToPlayers();
 
-  //qDebug() << " : Requette envoyée : \n" + r;
+  qDebug() << " : Requette envoyee : \n" + r;
 }
 
 GameEngine & Server::getGameEngine(){
   return *this->g;
+}
+
+
+void Server::addObjectToClear(int id){
+  this->toClear << id;
 }
 
 
