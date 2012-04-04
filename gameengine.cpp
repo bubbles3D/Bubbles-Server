@@ -217,8 +217,8 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
       }
     }
 
-    float playerRadius = p->getWidth() * RATIO;
-	float realMaxField = field.maxX - playerRadius;
+    float playerRadius = p->getRadius();
+    float realMaxField = field.maxX - playerRadius;
 
 	float pos1;
 	float pos2;
@@ -561,6 +561,7 @@ bool GameEngine::processColision(Sphere *s1, Sphere *s2){
   bool b = false;
 
   if(colide(s1, s2) || approximateColision(s1, s2)){
+    //if(colide(s1, s2)){
 
     //Player - Projectile
     if(dynamic_cast<Projectile*>(s1) != NULL && dynamic_cast<Player*>(s2) != NULL){
@@ -602,8 +603,8 @@ bool GameEngine::processColision(Sphere *s, Cuboid *c){
 
 bool GameEngine::colide(Sphere *s1, Sphere *s2){
   float d = sqrt(pow(s1->getPosX() - s2->getPosX(), 2) + pow(s1->getPosY() - s2->getPosY(), 2) + pow(s1->getPosZ() - s2->getPosZ(), 2));
-
-  if(d < s1->getRealDiameter() + s2->getRealDiameter()){
+//qDebug() << "D : " << d;
+  if(d < s1->getRadius() + s2->getRadius()){
     return true;
   } else {
     return false;
@@ -615,33 +616,33 @@ bool GameEngine::colide(Sphere *s, Cuboid *c){
   float pY;
   float pZ;
 
-  if(s->getPosX() > c->getPosX() + (c->getWidth())){
-    pX = c->getPosX() + (c->getWidth());
-  } else if(s->getPosX() < c->getPosX() - (c->getWidth())){
-    pX = c->getPosX() - (c->getWidth());
+  if(s->getPosX() > c->getPosX() + (c->getWidth() / 2)){
+    pX = c->getPosX() + (c->getWidth() / 2);
+  } else if(s->getPosX() < c->getPosX() - (c->getWidth() / 2)){
+    pX = c->getPosX() - (c->getWidth() / 2);
   } else {
     pX = s->getPosX();
   }
 
-  if(s->getPosY() > c->getPosY() + (c->getHeight())){
-    pY = c->getPosY() + (c->getHeight());
-  } else if(s->getPosY() < c->getPosY() - (c->getHeight())){
-    pY = c->getPosY() - (c->getHeight());
+  if(s->getPosY() > c->getPosY() + (c->getHeight() / 2)){
+    pY = c->getPosY() + (c->getHeight() / 2);
+  } else if(s->getPosY() < c->getPosY() - (c->getHeight() / 2)){
+    pY = c->getPosY() - (c->getHeight() / 2);
   } else {
     pY = s->getPosY();
   }
 
-  if(s->getPosZ() > c->getPosZ() + (c->getLength())){
-    pZ = c->getPosZ() + (c->getLength());
-  } else if(s->getPosZ() < c->getPosZ() - (c->getLength())){
-    pZ = c->getPosZ() - (c->getLength());
+  if(s->getPosZ() > c->getPosZ() + (c->getLength() / 2)){
+    pZ = c->getPosZ() + (c->getLength() / 2);
+  } else if(s->getPosZ() < c->getPosZ() - (c->getLength() / 2)){
+    pZ = c->getPosZ() - (c->getLength() / 2);
   } else {
     pZ = s->getPosZ();
   }
 
   float d = sqrt(pow(s->getPosX() - pX, 2) + pow(s->getPosY() - pY, 2) + pow(s->getPosZ() - pZ, 2));
 
-  if(d < s->getRealDiameter()){
+  if(d < s->getRadius()){
     return true;
   } else {
     return false;
@@ -790,7 +791,7 @@ bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
     //qDebug() << "OBJET " <<  ox <<" "<< oy << " " << oz;
   }
 
-  return d <= s1->getRealDiameter() + s2->getRealDiameter();
+  return d <= s1->getRadius() + s2->getRadius();
 }
 
 bool GameEngine::approximateColision(Sphere *s, Cuboid *c){

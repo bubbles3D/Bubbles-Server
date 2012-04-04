@@ -17,9 +17,9 @@ void Field::setRespawnPos(Player & p){
   bool b = true;
 
   while(b){
-    p.setPosX(rand()%this->maxX - p.getWidth() * RATIO);
-    p.setPosZ(rand()%this->maxZ - p.getWidth() * RATIO);
-    p.setPosY(p.getWidth() * RATIO);
+    p.setPosX(rand()%(this->maxX - (int)p.getRadius()));
+    p.setPosZ(rand()%(this->maxZ - (int)p.getRadius()));
+    p.setPosY(p.getRadius());
 
     p.setOldPosX(p.getPosX());
     p.setOldPosY(p.getPosY());

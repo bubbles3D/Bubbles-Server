@@ -5,7 +5,7 @@
 #include "player.h"
 
 #define DEFAULT_SPEED 6000
-#define PROJECTILE_DIAMETER_RATIO 6
+#define PROJECTILE_DIAMETER_RATIO 30
 #define DEFAULT_POWER 1
 
 class Player;

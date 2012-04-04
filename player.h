@@ -13,7 +13,7 @@
 #define MAX_LIFE 20
 #define START_LIFE 10
 #define SPEED 800
-#define PLAYER_DIAMETER_RATIO 20
+#define PLAYER_DIAMETER_RATIO 100
 
 class Server;
 class Projectile;

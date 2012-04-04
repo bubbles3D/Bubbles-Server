@@ -9,7 +9,9 @@ class Sphere : public GameObject
 public:
     Sphere(QObject *parent = 0);
 
-    double getRealDiameter();
+    double getRadius();
+
+private:
 };
 
 #endif // SPHERE_H

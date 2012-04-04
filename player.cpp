@@ -80,27 +80,27 @@ void Player::fire(){
 void Player::setFloorDistance(){
   switch(this->getCube()){
   case 1:
-    this->setPosY(this->getWidth() * RATIO);
+    this->setPosY(this->getRadius());
     break;
 
   case 2:
-    this->setPosZ(this->getWidth() * RATIO);
+    this->setPosZ(this->getRadius());
     break;
 
   case 3:
-    this->setPosX(Server::getServer()->getGameEngine().getField().maxX - (this->getWidth() * RATIO));
+    this->setPosX(Server::getServer()->getGameEngine().getField().maxX - this->getRadius());
     break;
 
   case 4:
-    this->setPosZ(Server::getServer()->getGameEngine().getField().maxX - (this->getWidth() * RATIO));
+    this->setPosZ(Server::getServer()->getGameEngine().getField().maxX - this->getRadius());
     break;
 
   case 5:
-    this->setPosY(Server::getServer()->getGameEngine().getField().maxX - (this->getWidth() * RATIO));
+    this->setPosY(Server::getServer()->getGameEngine().getField().maxX - this->getRadius());
     break;
 
   case 6:
-    this->setPosX(this->getWidth() * RATIO);
+    this->setPosX(this->getRadius());
     break;
 
   }

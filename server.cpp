@@ -70,6 +70,9 @@ void Server::playerDisconnected(){
   this->players.remove(socket->peerAddress().toString() + ":" + QString::number(socket->peerPort()));
 
   this->toClear << p->id;
+  foreach(Projectile * pr, p->projectiles){
+    this->toClear << pr->id;
+  }
 
   p->deleteLater();
 
@@ -91,7 +94,7 @@ void Server::dataReceived()
 	p.pendingRequest = true;
 	p.request += buffer;
 
-	//qDebug() << " : Requette reçue : \n" + p.request;
+    //qDebug() << " : Requette reçue : \n" + p.request;
 
 	if(p.request.indexOf("$$") >= 0){
       p.pendingRequest = false;
@@ -110,6 +113,12 @@ void Server::dataReceived()
 void Server::processRequest(Player &p, QString req){
   if(req.startsWith("init")){
     p.setName(req.split(' ')[1]);
+
+    if(req.split(' ').size() > 2){
+      p.setColorRED(req.split(' ')[2].toInt());
+      p.setColorGREEN(req.split(' ')[3].toInt());
+      p.setColorBLUE(req.split(' ')[4].toInt());
+    }
 
     sendInitToPlayer(p);
   } else if(req.startsWith("update")){
@@ -276,6 +285,9 @@ void Server::forgePlayersInfo(QVariantMap & packet, bool force){
       if(force || p->getModifiedProperties().contains("height")) player.insert("h", (double)p->getHeight());
       if(force || p->getModifiedProperties().contains("length")) player.insert("l", (double)p->getLength());
       if(force || p->getModifiedProperties().contains("cube")) player.insert("cube", p->getCube());
+      if(force || p->getModifiedProperties().contains("colorRED")) player.insert("r", p->getColorRED());
+      if(force || p->getModifiedProperties().contains("colorGREEN")) player.insert("g", p->getColorGREEN());
+      if(force || p->getModifiedProperties().contains("colorBLUE")) player.insert("b", p->getColorBLUE());
 
       if(!force){ //On ne veut pas effacer les modifs en cas de force
         p->getModifiedProperties().clear();
@@ -312,6 +324,9 @@ void Server::forgeProjectilesInfo(QVariantMap & packet, bool force){
         if(force || pr->getModifiedProperties().contains("width")) projectile.insert("w", (double)pr->getWidth());
         if(force || pr->getModifiedProperties().contains("height")) projectile.insert("h", (double)pr->getHeight());
         if(force || pr->getModifiedProperties().contains("length")) projectile.insert("l", (double)pr->getLength());
+        if(force || pr->getModifiedProperties().contains("colorRED")) projectile.insert("r", pr->getColorRED());
+        if(force || pr->getModifiedProperties().contains("colorGREEN")) projectile.insert("g", pr->getColorGREEN());
+        if(force || pr->getModifiedProperties().contains("colorBLUE")) projectile.insert("b", pr->getColorBLUE());
 
         if(!force){
           pr->getModifiedProperties().clear();

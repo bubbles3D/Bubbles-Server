@@ -16,6 +16,10 @@ Projectile::Projectile(Player * playerOwner) : Sphere(playerOwner){
     this->setDirX(playerOwner->getDirX());
     this->setDirY(playerOwner->getDirY());
     this->setDirZ(playerOwner->getDirZ());
+
+    this->setColorRED(playerOwner->getColorRED());
+    this->setColorGREEN(playerOwner->getColorGREEN());
+    this->setColorBLUE(playerOwner->getColorBLUE());
 }
 
 void Projectile::explode(){

@@ -3,6 +3,6 @@
 Sphere::Sphere(QObject *parent) : GameObject(parent) {
 }
 
-double Sphere::getRealDiameter(){
-    return this->getWidth() * RATIO;
+double Sphere::getRadius(){
+    return this->getWidth() / 2;
 }
