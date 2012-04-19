@@ -3,24 +3,7 @@
 #include "server.h"
 
 Player::Player(QObject *parent) : Sphere(parent) {
-  setKeyForwards(false);
-  setKeyBackwards(false);
-  setKeyLeft(false);
-  setKeyRight(false);
-  setSpeed(SPEED);
-  setDirX(1);
-  setDirY(0);
-  setDirZ(0);
-  setLife(START_LIFE);
-  setDeads(0);
-  setKills(0);
-  setWidth(PLAYER_DIAMETER_RATIO);
-  setHeight(PLAYER_DIAMETER_RATIO);
-  setLength(PLAYER_DIAMETER_RATIO);
-  setPosY(getHeight() * RATIO);
-  setCube(1);
-
-  this->respawn();
+  this->reset();
 }
 
 bool Player::takeHit(int power){
@@ -29,7 +12,6 @@ bool Player::takeHit(int power){
   this->setLife(this->getLife() - power);
 
   if(this->getLife() <= 0){
-    this->setLife(START_LIFE);
 
     this->setDeads(this->getDeads() + 1);
 
@@ -68,7 +50,32 @@ void Player::hitPlayer(Player & p, int power){
 }
 
 void Player::respawn(){
+  this->setLife(START_LIFE);
+
+  this->setWidth(PLAYER_DIAMETER_RATIO);
+  this->setHeight(PLAYER_DIAMETER_RATIO);
+  this->setLength(PLAYER_DIAMETER_RATIO);
+
+  this->setSpeed(SPEED);
+
   Server::getServer()->getGameEngine().getField().setRespawnPos(*this);
+}
+
+
+void Player::reset(){
+  setKeyForwards(false);
+  setKeyBackwards(false);
+  setKeyLeft(false);
+  setKeyRight(false);
+  setDirX(1);
+  setDirY(0);
+  setDirZ(0);
+  setDeads(0);
+  setKills(0);
+  setPosY(getHeight() * RATIO);
+  setCube(1);
+
+  this->respawn();
 }
 
 void Player::fire(){

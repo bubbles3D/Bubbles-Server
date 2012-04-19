@@ -26,7 +26,9 @@ SOURCES += main.cpp \
     sphere.cpp \
     logger.cpp \
     cuboid.cpp \
-    obstacle.cpp
+    obstacle.cpp \
+    gamedirector.cpp \
+    team.cpp
 
 HEADERS += \
     server.h \
@@ -38,7 +40,9 @@ HEADERS += \
     sphere.h \
     logger.h \
     cuboid.h \
-    obstacle.h
+    obstacle.h \
+    gamedirector.h \
+    team.h
 
 
 symbian: LIBS += -lqjson0
@@ -47,17 +51,3 @@ else:unix: LIBS += -lqjson
 
 INCLUDEPATH += $$PWD/../QJson/include
 DEPENDPATH += $$PWD/../QJson/include
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -18,11 +18,12 @@ class Field;
 class GameEngine : public QObject {
     Q_OBJECT
 public:
-    explicit GameEngine(Server* server);
+    explicit GameEngine(QObject* server);
 
     bool modif;
 
     void init();
+    void stop();
 
     Field & getField();
 

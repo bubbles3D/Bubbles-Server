@@ -61,6 +61,7 @@ public:
     void hitPlayer(Player & p, int power = 1);
 
     void respawn();
+    void reset();
 
     void fire();
 

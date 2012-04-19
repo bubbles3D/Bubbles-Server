@@ -12,7 +12,7 @@ void Server::initServer(QObject *parent, int port){
 }
 
 Server::Server(QObject *parent, int port) : QTcpServer(parent), port(port){
-  g = new GameEngine(this);
+  gd = new GameDirector(this);
 }
 
 void Server::init(){
@@ -38,7 +38,7 @@ void Server::init(){
 
 	connect(this, SIGNAL(newConnection()), this, SLOT(playerConnected()));
 
-	g->init();
+    this->gd->startFun();
   }
 }
 
@@ -187,7 +187,7 @@ void Server::processRequest(Player &p, QString req){
 	}
 
 
-	this->g->modif = true;
+    this->gd->getGameEngine().modif = true;
   }
 
   p.request.remove(req + "$$");
@@ -201,6 +201,7 @@ QByteArray Server::forgeInit(){
   forgeFieldInfo(packet);
   forgePlayersInfo(packet, true);
   forgeProjectilesInfo(packet, true);
+  forgeGameInfo(packet);
 
   if(packet.size() > 0){
     QJson::Serializer serializer;
@@ -237,12 +238,12 @@ void Server::forgeFieldInfo(QVariantMap & packet){
 
   QVariantMap fld;
 
-  fld.insert("width", this->g->getField().maxX);
-  fld.insert("height", this->g->getField().maxZ);
+  fld.insert("width", this->gd->getGameEngine().getField().maxX);
+  fld.insert("height", this->gd->getGameEngine().getField().maxZ);
 
   QVariantList obs;
 
-  foreach(Obstacle *o, this->g->getField().obstacles){
+  foreach(Obstacle *o, this->gd->getGameEngine().getField().obstacles){
 	QVariantMap ob;
 
 	ob.insert("id", o->id);
@@ -360,6 +361,19 @@ void Server::forgeToClearInfo(QVariantMap & packet){
   }
 }
 
+
+void Server::forgeGameInfo(QVariantMap & packet){
+  QVariantMap gameInf;
+
+  gameInf.insert("gameTime", this->gd->getRemainingGameTime());
+  gameInf.insert("pauseTime", this->gd->getRemainingPauseTime());
+  //TODO : game type
+  //TODO : teams
+
+
+  packet.insert("game", gameInf);
+}
+
 void Server::sendToAllPlayers(QByteArray & packet){
   foreach(Player *p, players){
     sendToPlayer(*p, packet);
@@ -384,6 +398,18 @@ void Server::sendUpdateToPlayers(){
   if(r.size() > 0){
     sendToAllPlayers(r);
 
+    //qDebug() << " : Requette envoyee : \n" + r;
+  }
+}
+
+void Server::sendInitToAllPlayers(){
+  QByteArray r;
+
+  r = forgeInit();
+
+  if(r.size() > 0 && ! this->players.isEmpty()){
+    sendToAllPlayers(r);
+
     qDebug() << " : Requette envoyee : \n" + r;
   }
 }
@@ -401,7 +427,11 @@ void Server::sendInitToPlayer(Player & p){
 }
 
 GameEngine & Server::getGameEngine(){
-  return *this->g;
+  return this->gd->getGameEngine();
+}
+
+GameDirector & Server::getGameDirector(){
+  return *this->gd;
 }
 
 

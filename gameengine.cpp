@@ -1,10 +1,12 @@
 #include "gameengine.h"
 
-GameEngine::GameEngine(Server* server) : QObject(server), modif(false), server(server), fps(FPS) {
+GameEngine::GameEngine(QObject* server) : QObject(server), modif(false), fps(FPS) {
   msIdealUpdate = 1000/this->fps;
 }
 
 void GameEngine::init(){
+  this->server = Server::getServer();
+
   this->timer = new QTimer(this);
   timer->setSingleShot(true);
   connect(this->timer, SIGNAL(timeout()), this, SLOT(updateObjects()));
@@ -12,6 +14,10 @@ void GameEngine::init(){
   time.start();
 
   updateObjects();
+}
+
+void GameEngine::stop(){
+  this->timer->stop();
 }
 
 void GameEngine::updateObjects(){

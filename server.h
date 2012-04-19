@@ -10,8 +10,10 @@
 #include "player.h"
 #include "gameengine.h"
 #include "logger.h"
+#include "gamedirector.h"
 
 class GameEngine;
+class GameDirector;
 class Player;
 
 class Server : public QTcpServer
@@ -26,8 +28,10 @@ public:
     QList<Player*> getPlayers();
 
     void sendUpdateToPlayers();
+    void sendInitToAllPlayers();
 
     GameEngine & getGameEngine();
+    GameDirector & getGameDirector();
 
     void addObjectToClear(int id);
 
@@ -41,9 +45,9 @@ private:
 
     int port;
 
-    QHash<QString, Player*> players;
+    GameDirector *gd;
 
-    GameEngine * g;
+    QHash<QString, Player*> players;
 
     QList<int> toClear;
 
@@ -60,6 +64,7 @@ private:
     void forgeProjectilesInfo(QVariantMap & packet, bool force = false);
     void forgeFieldInfo(QVariantMap & packet);
     void forgeToClearInfo(QVariantMap & packet);
+    void forgeGameInfo(QVariantMap & packet);
 
 private slots:
     void playerConnected();
