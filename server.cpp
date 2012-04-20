@@ -289,6 +289,7 @@ void Server::forgePlayersInfo(QVariantMap & packet, bool force){
       if(force || p->getModifiedProperties().contains("colorRED")) player.insert("r", p->getColorRED());
       if(force || p->getModifiedProperties().contains("colorGREEN")) player.insert("g", p->getColorGREEN());
       if(force || p->getModifiedProperties().contains("colorBLUE")) player.insert("b", p->getColorBLUE());
+      if(force || p->getModifiedProperties().contains("team")) player.insert("team", p->getTeamNum());
 
       if(!force){ //On ne veut pas effacer les modifs en cas de force
         p->getModifiedProperties().clear();
@@ -367,9 +368,24 @@ void Server::forgeGameInfo(QVariantMap & packet){
 
   gameInf.insert("gameTime", this->gd->getRemainingGameTime());
   gameInf.insert("pauseTime", this->gd->getRemainingPauseTime());
-  //TODO : game type
-  //TODO : teams
+  gameInf.insert("gameType", this->gd->getGameType());
 
+  QVariantList teamList;
+
+  foreach(Team * t, this->gd->getTeams()){
+    QVariantMap team;
+
+    team.insert("cR", t->getColorRED());
+    team.insert("cG", t->getColorGREEN());
+    team.insert("cB", t->getColorBLUE());
+    team.insert("num", t->getNum());
+    team.insert("name", t->getName());
+    team.insert("pts", t->getPoints());
+
+    teamList << team;
+  }
+
+  gameInf.insert("teams", teamList);
 
   packet.insert("game", gameInf);
 }

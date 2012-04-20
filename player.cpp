@@ -222,3 +222,46 @@ void Player::setCube(int cube){
     this->modifiedProperties.insert("cube", QString::number(cube));
   }
 }
+
+Team * Player::getTeam(){
+  return this->team;
+}
+
+int Player::getTeamNum(){
+  if(this->team == NULL){
+    return 0;
+  } else {
+    return this->team->getNum();
+  }
+}
+
+void Player::setTeam(Team * team){
+  if(this->team != team){
+    this->team = team;
+    this->modifiedProperties.insert("team", QString::number(this->getTeamNum()));
+  }
+}
+
+int Player::getColorRED(){
+  if(this->team != NULL){
+    return this->team->getColorRED();
+  } else {
+    return Sphere::getColorRED();
+  }
+}
+
+int Player::getColorGREEN(){
+  if(this->team != NULL){
+    return this->team->getColorGREEN();
+  } else {
+    return Sphere::getColorGREEN();
+  }
+}
+
+int Player::getColorBLUE(){
+  if(this->team != NULL){
+    return this->team->getColorBLUE();
+  } else {
+    return Sphere::getColorBLUE();
+  }
+}

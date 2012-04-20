@@ -6,7 +6,7 @@
 
 #include "sphere.h"
 #include "projectile.h"
-
+#include "team.h"
 
 #define MIN_DIAMETER 0.3
 #define MAX_DIAMETER 2.0
@@ -17,6 +17,7 @@
 
 class Server;
 class Projectile;
+class Team;
 
 class Player : public Sphere
 {
@@ -54,6 +55,14 @@ public:
     int getCube();
     void setCube(int cube);
 
+    Team * getTeam();
+    int getTeamNum();
+    void setTeam(Team * team);
+
+    int getColorRED();
+    int getColorGREEN();
+    int getColorBLUE();
+
     QString request;
     bool pendingRequest;
 
@@ -90,6 +99,8 @@ private:
     int kills;
 
     int cube; //Sur quelle face du cube le joueur est.
+
+    Team * team;
 
 };
 

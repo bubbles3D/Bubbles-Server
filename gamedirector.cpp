@@ -11,7 +11,7 @@ GameDirector::GameDirector(QObject *parent) : QObject(parent) {
   this->pauseTimer->setSingleShot(true);
   connect(this->pauseTimer, SIGNAL(timeout()), this, SLOT(newGame()));
 
-
+  this->gameType = 1;
 }
 
 void GameDirector::startFun(){
@@ -24,6 +24,17 @@ GameEngine & GameDirector::getGameEngine(){
 
 
 void GameDirector::newGame(){
+  if(this->gameType == 3){
+    this->gameType = 1;
+    setDM();
+  } else if(this->gameType == 1){
+    this->gameType = 2;
+    setTDM();
+  } else if(this->gameType == 2){
+    this->gameType = 3;
+    setCTF();
+  }
+
   this->g->getField().regenerateMap();
 
   foreach(Player * p, Server::getServer()->getPlayers()){
@@ -65,4 +76,81 @@ float GameDirector::getRemainingPauseTime(){
   } else {
     return PAUSE_TIME;
   }
+}
+
+int GameDirector::getGameType(){
+  return this->gameType;
+}
+
+QString GameDirector::getGameTypeName(){
+  QString res = "UNKNOWN";
+
+  switch(this->gameType){
+  case 1 :
+    res = "DM";
+    break;
+  case 2:
+    res = "TDM";
+    break;
+  case 3:
+    res = "CTF";
+    break;
+  }
+
+  return res;
+}
+
+QList<Team*> GameDirector::getTeams(){
+  return this->teams;
+}
+
+void GameDirector::reset(){
+  foreach(Player * p, Server::getServer()->getPlayers()){
+    p->setTeam(NULL);
+  }
+
+  foreach(Team * t, this->teams){
+    delete t;
+  }
+
+  this->teams.clear();
+
+
+
+}
+
+void GameDirector::setTeams(){
+  Team * t1 = new Team("RED TEAM", 1, 255, 0, 0, 0, this);
+  Team * t2 = new Team("BLUE TEAM", 2, 0, 0, 255, 0, this);
+  this->teams.append(t1);
+  this->teams.append(t2);
+
+  QList<Player*> players = Server::getServer()->getPlayers();
+
+  bool red = rand() % 2 == 1 ? true : false; //Savoir quelle des deux equipes aura le plus de joueurs si impaire..
+  int r;
+  while(players.size() > 0){
+    r = rand() % players.size();
+    if(red){
+      players.at(r)->setTeam(t1);
+      players.removeAt(r);
+      red = false;
+    } else {
+      players.at(r)->setTeam(t2);
+      players.removeAt(r);
+      red = true;
+    }
+  }
+}
+
+void GameDirector::setDM(){
+  //Rien a faire, youpi =D
+}
+
+void GameDirector::setTDM(){
+  setTeams();
+}
+
+void GameDirector::setCTF(){
+  setTeams();
 }

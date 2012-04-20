@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "gameengine.h"
+#include "team.h"
 
 #define GAME_TIME 10
 #define PAUSE_TIME 10
@@ -23,6 +24,11 @@ public:
   float getRemainingGameTime();
   float getRemainingPauseTime();
 
+  int getGameType();
+  QString getGameTypeName();
+
+  QList<Team*> getTeams();
+
 signals:
 
 public slots:
@@ -39,6 +45,23 @@ private:
   QTimer * pauseTimer;
 
   QTime startedTime;
+
+  QList<Team*> teams;
+
+  int gameType;
+
+  //########Games section############
+  void reset();
+  void setTeams();
+
+  //-------------DM------------------
+  void setDM();
+
+  //-------------TDM------------------
+  void setTDM();
+
+  //-------------CTF------------------
+  void setCTF();
 
 };
 
