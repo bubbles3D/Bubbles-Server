@@ -24,6 +24,8 @@ GameEngine & GameDirector::getGameEngine(){
 
 
 void GameDirector::newGame(){
+  reset();
+
   if(this->gameType == 3){
     this->gameType = 1;
     setDM();
