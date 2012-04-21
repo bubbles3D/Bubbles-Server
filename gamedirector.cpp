@@ -116,6 +116,7 @@ void GameDirector::reset(){
     p->setFlag(NULL);
 
     foreach(Projectile *pr, p->projectiles){
+      Server::getServer()->addObjectToClear(pr->id);
       delete pr;
     }
     p->projectiles.clear();
