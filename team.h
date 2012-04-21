@@ -26,6 +26,8 @@ public:
   int getColorGREEN();
   int getColorBLUE();
 
+  QSet<QString> & getModifiedProperties();
+
 signals:
 
 public slots:
@@ -44,6 +46,8 @@ private:
   int faceRespawn;
 
   QList<Player*> players;
+
+  QSet<QString> modifiedProperties;
 
 
 };

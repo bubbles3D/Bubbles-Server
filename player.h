@@ -19,6 +19,7 @@
 class Server;
 class Projectile;
 class Team;
+class Flag;
 
 class Player : public Sphere
 {
@@ -52,6 +53,7 @@ public:
     void setDeads(int deads);
     int getKills();
     void setKills(int kills);
+    void addKill();
 
     Team * getTeam();
     int getTeamNum();

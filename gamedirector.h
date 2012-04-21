@@ -29,6 +29,8 @@ public:
 
   QList<Team*> getTeams();
 
+  QList<Flag*> getFlags();
+
 signals:
 
 public slots:
@@ -47,6 +49,8 @@ private:
   QTime startedTime;
 
   QList<Team*> teams;
+
+  QList<Flag *> flags;
 
   int gameType;
 

@@ -202,6 +202,8 @@ QByteArray Server::forgeInit(){
   forgePlayersInfo(packet, true);
   forgeProjectilesInfo(packet, true);
   forgeGameInfo(packet);
+  forgeTeamsInfo(packet, true);
+  forgeFlagsInfo(packet, true);
 
   if(packet.size() > 0){
     QJson::Serializer serializer;
@@ -223,6 +225,8 @@ QByteArray Server::forgeUpdate(){
   forgePlayersInfo(packet);
   forgeProjectilesInfo(packet);
   forgeToClearInfo(packet);
+  forgeTeamsInfo(packet);
+  forgeFlagsInfo(packet);
 
   if(packet.size() > 0){
     QJson::Serializer serializer;
@@ -370,24 +374,56 @@ void Server::forgeGameInfo(QVariantMap & packet){
   gameInf.insert("pauseTime", this->gd->getRemainingPauseTime());
   gameInf.insert("gameType", this->gd->getGameType());
 
+  packet.insert("game", gameInf);
+}
+
+void Server::forgeTeamsInfo(QVariantMap & packet, bool force){
   QVariantList teamList;
 
   foreach(Team * t, this->gd->getTeams()){
     QVariantMap team;
 
-    team.insert("cR", t->getColorRED());
-    team.insert("cG", t->getColorGREEN());
-    team.insert("cB", t->getColorBLUE());
-    team.insert("num", t->getNum());
-    team.insert("name", t->getName());
-    team.insert("pts", t->getPoints());
+    if(force) team.insert("cR", t->getColorRED());
+    if(force) team.insert("cG", t->getColorGREEN());
+    if(force) team.insert("cB", t->getColorBLUE());
+    if(force) team.insert("num", t->getNum());
+    if(force) team.insert("name", t->getName());
+    if(force || t->getModifiedProperties().contains("points")) team.insert("pts", t->getPoints());
 
-    teamList << team;
+    if(!team.isEmpty()){
+      teamList << team;
+    }
   }
 
-  gameInf.insert("teams", teamList);
+  if(!teamList.isEmpty()){
+    packet.insert("teams", teamList);
+  }
+}
 
-  packet.insert("game", gameInf);
+void Server::forgeFlagsInfo(QVariantMap & packet, bool force){
+  QVariantList flagsList;
+
+  foreach(Flag * f, this->gd->getFlags()){
+    QVariantMap flag;
+
+    flag.insert("id", f->id);
+    if(force || f->getModifiedProperties().contains("colorRED")) flag.insert("cR", f->getColorRED());
+    if(force || f->getModifiedProperties().contains("colorRED")) flag.insert("cG", f->getColorGREEN());
+    if(force || f->getModifiedProperties().contains("colorRED")) flag.insert("cB", f->getColorBLUE());
+    if(force) flag.insert("team", f->getTeam()->getNum());
+    if(force || f->getModifiedProperties().contains("posX")) flag.insert("x", f->getPosX());
+    if(force || f->getModifiedProperties().contains("posY")) flag.insert("y", f->getPosY());
+    if(force || f->getModifiedProperties().contains("posZ")) flag.insert("z", f->getPosZ());
+    if(force || f->getModifiedProperties().contains("cube")) flag.insert("cube", f->getCube());
+
+    if(flag.size() > 1){
+      flagsList << flag;
+    }
+  }
+
+  if(!flagsList.isEmpty()){
+    packet.insert("flags", flagsList);
+  }
 }
 
 void Server::sendToAllPlayers(QByteArray & packet){

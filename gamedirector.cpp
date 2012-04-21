@@ -106,9 +106,14 @@ QList<Team*> GameDirector::getTeams(){
   return this->teams;
 }
 
+QList<Flag*> GameDirector::getFlags(){
+  return this->flags;
+}
+
 void GameDirector::reset(){
   foreach(Player * p, Server::getServer()->getPlayers()){
     p->setTeam(NULL);
+    p->setFlag(NULL);
   }
 
   foreach(Team * t, this->teams){
@@ -117,15 +122,17 @@ void GameDirector::reset(){
 
   this->teams.clear();
 
+  foreach(Flag * f, this->flags){
+    delete f;
+  }
 
-
+  this->flags.clear();
 }
 
 void GameDirector::setTeams(){
   Team * t1 = new Team("RED TEAM", 1, 255, 0, 0, 0, this);
   Team * t2 = new Team("BLUE TEAM", 2, 0, 0, 255, 0, this);
-  this->teams.append(t1);
-  this->teams.append(t2);
+  this->teams << t1 << t2;
 
   QList<Player*> players = Server::getServer()->getPlayers();
 
@@ -155,4 +162,11 @@ void GameDirector::setTDM(){
 
 void GameDirector::setCTF(){
   setTeams();
+
+  Field & f = Server::getServer()->getGameEngine().getField();
+
+  Flag * f1 = new Flag(f.maxX / 2, 25, f.maxZ / 2, 1, this->teams[0], this);
+  Flag * f2 = new Flag(f.maxX / 2, f.maxY - 25, f.maxZ / 2, 5, this->teams[1], this);
+
+  this->flags << f1 << f2;
 }

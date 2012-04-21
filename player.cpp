@@ -45,7 +45,7 @@ void Player::hitPlayer(Player & p, int power){
   }
 
   if(p.takeHit(power)){
-    this->setKills(this->getKills() + 1);
+    this->addKill();
   }
 }
 
@@ -212,6 +212,15 @@ void Player::setKills(int kills){
   }
 }
 
+void Player::addKill(){
+  if(Server::getServer()->getGameDirector().getGameType() == 2 && this->team != NULL){ //En cas de TDM
+    this->team->addTeamPoints(1);
+  }
+
+  this->kills++;
+  this->modifiedProperties.insert("kills", QString::number(kills));
+}
+
 Team * Player::getTeam(){
   return this->team;
 }
@@ -232,7 +241,7 @@ void Player::setTeam(Team * team){
 }
 
 int Player::getFlagId(){
-  return this->flag != null ? this->flag->id : 0;
+  return this->flag != NULL ? this->flag->id : 0;
 }
 
 void Player::setFlag(Flag * flag){

@@ -22,11 +22,22 @@ int Team::getPoints(){
 }
 
 void Team::addTeamPoints(int teamPoints){
-  this->teamPoints += teamPoints;
+  if(teamPoints != 0){
+    this->teamPoints += teamPoints;
+    qDebug() << "##################### CACA " << teamPoints;
+    foreach (const QString &value,  this->modifiedProperties)
+         qDebug() << value;
+
+    if(!this->modifiedProperties.contains("points")) this->modifiedProperties.insert("points");
+    qDebug() << "##################### CACA";
+  }
 }
 
 void Team::removeTeamPoints(int teamPoints){
-  this->teamPoints -= teamPoints;
+  if(teamPoints != 0){
+    this->teamPoints -= teamPoints;
+    if(!this->modifiedProperties.contains("points")) this->modifiedProperties.insert("points");
+  }
 }
 
 void Team::addPlayer(Player* p){
@@ -55,4 +66,8 @@ int Team::getColorGREEN(){
 
 int Team::getColorBLUE(){
   return this->colorBLUE;
+}
+
+QSet<QString> & Team::getModifiedProperties(){
+  return this->modifiedProperties;
 }

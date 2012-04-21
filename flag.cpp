@@ -6,11 +6,17 @@ Flag::Flag(float initialPosX, float initialPosY, float initialPosZ, int initialC
   this->initialPosZ = initialPosZ;
   this->initialCube = initialCube;
 
+  this->setPosX(initialPosX);
+  this->setPosY(initialPosY);
+  this->setPosZ(initialPosZ);
+
+  this->setCube(initialCube);
+
   this->team = team;
 
-  this->setColorRED(team->colorRED);
-  this->setColorGREEN(team->colorGREEN);
-  this->setColorBLUE(team->colorBLUE);
+  this->setColorRED(team->getColorRED());
+  this->setColorGREEN(team->getColorGREEN());
+  this->setColorBLUE(team->getColorBLUE());
 
   this->moved = false;
 

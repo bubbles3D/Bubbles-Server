@@ -9,6 +9,8 @@
 #define FLAG_HEIGHT 50
 #define FLAG_LENGTH 50
 
+class Team;
+
 class Flag : public Cuboid
 {
   Q_OBJECT

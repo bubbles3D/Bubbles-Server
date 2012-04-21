@@ -873,6 +873,7 @@ bool GameEngine::colideObject(GameObject* ob){
 bool GameEngine::colidePlayerProjectile(Player *pl, Projectile *pr){
   if(pr->owner != pl && pl->getTeam() != NULL && pr->owner->getTeam() != NULL && pl->getTeam() == pr->owner->getTeam()){
     pr->explode();
+    return true;
   } else if(pr->owner != pl){
     pl->setPosX(pl->getOldPosX());
     pl->setPosY(pl->getOldPosY());
