@@ -114,6 +114,11 @@ void GameDirector::reset(){
   foreach(Player * p, Server::getServer()->getPlayers()){
     p->setTeam(NULL);
     p->setFlag(NULL);
+
+    foreach(Projectile *pr, p->projectiles){
+      delete pr;
+    }
+    p->projectiles.clear();
   }
 
   foreach(Team * t, this->teams){
