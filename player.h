@@ -7,6 +7,7 @@
 #include "sphere.h"
 #include "projectile.h"
 #include "team.h"
+#include "flag.h"
 
 #define MIN_DIAMETER 0.3
 #define MAX_DIAMETER 2.0
@@ -52,12 +53,12 @@ public:
     int getKills();
     void setKills(int kills);
 
-    int getCube();
-    void setCube(int cube);
-
     Team * getTeam();
     int getTeamNum();
     void setTeam(Team * team);
+
+    int getFlagId();
+    void setFlag(Flag * flag);
 
     int getColorRED();
     int getColorGREEN();
@@ -98,9 +99,9 @@ private:
     int deads;
     int kills;
 
-    int cube; //Sur quelle face du cube le joueur est.
-
     Team * team;
+
+    Flag * flag;
 
 };
 

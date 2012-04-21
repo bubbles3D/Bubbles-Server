@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     cuboid.cpp \
     obstacle.cpp \
     gamedirector.cpp \
-    team.cpp
+    team.cpp \
+    flag.cpp
 
 HEADERS += \
     server.h \
@@ -42,7 +43,8 @@ HEADERS += \
     cuboid.h \
     obstacle.h \
     gamedirector.h \
-    team.h
+    team.h \
+    flag.h
 
 
 symbian: LIBS += -lqjson0

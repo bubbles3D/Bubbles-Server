@@ -37,6 +37,9 @@ public:
     float getDirZ();
     void setDirZ(float dirZ);
 
+    int getCube();
+    void setCube(int cube);
+
     float getWidth();
     void setWidth(float width);
     float getHeight();
@@ -74,6 +77,8 @@ private:
     float dirX;
     float dirY;
     float dirZ;
+
+    int cube;
 
     float width;
     float height;

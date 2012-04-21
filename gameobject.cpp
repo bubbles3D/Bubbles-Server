@@ -111,6 +111,17 @@ void GameObject::setDirZ(float dirZ){
   }
 }
 
+int GameObject::getCube(){
+  return this->cube;
+}
+
+void GameObject::setCube(int cube){
+  if(this->cube != cube){
+    this->cube = cube;
+    this->modifiedProperties.insert("cube", QString::number(cube));
+  }
+}
+
 float GameObject::getWidth(){
   return this->width;
 }

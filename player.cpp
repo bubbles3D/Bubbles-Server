@@ -212,17 +212,6 @@ void Player::setKills(int kills){
   }
 }
 
-int Player::getCube(){
-  return this->cube;
-}
-
-void Player::setCube(int cube){
-  if(this->cube != cube){
-    this->cube = cube;
-    this->modifiedProperties.insert("cube", QString::number(cube));
-  }
-}
-
 Team * Player::getTeam(){
   return this->team;
 }
@@ -240,6 +229,14 @@ void Player::setTeam(Team * team){
     this->team = team;
     this->modifiedProperties.insert("team", QString::number(this->getTeamNum()));
   }
+}
+
+int Player::getFlagId(){
+  return this->flag != null ? this->flag->id : 0;
+}
+
+void Player::setFlag(Flag * flag){
+  this->flag = flag;
 }
 
 int Player::getColorRED(){
