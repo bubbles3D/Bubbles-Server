@@ -41,6 +41,10 @@ Player * Flag::getOwner(){
   return this->owner;
 }
 
+void Flag::setOwner(Player * p){
+  this->owner = p;
+}
+
 Team * Flag::getTeam(){
   return this->team;
 }

@@ -26,16 +26,16 @@ GameEngine & GameDirector::getGameEngine(){
 void GameDirector::newGame(){
   reset();
 
-  if(this->gameType == 3){
+  /*if(this->gameType == 3){
     this->gameType = 1;
     setDM();
   } else if(this->gameType == 1){
     this->gameType = 2;
     setTDM();
-  } else if(this->gameType == 2){
+  } else if(this->gameType == 2){*/
     this->gameType = 3;
     setCTF();
-  }
+  //}
 
   this->g->getField().regenerateMap();
 
@@ -108,6 +108,20 @@ QList<Team*> GameDirector::getTeams(){
 
 QList<Flag*> GameDirector::getFlags(){
   return this->flags;
+}
+
+void GameDirector::addPlayerToGame(Player * p){
+  if(this->gameType == 2 || this->gameType == 3) { //TDM ou CTF
+     if(this->teams[0]->getPlayers().size() > this->teams[1]->getPlayers().size()){
+       p->setTeam(this->teams[1]);
+     } else if(this->teams[1]->getPlayers().size() > this->teams[0]->getPlayers().size()){
+       p->setTeam(this->teams[0]);
+     } else {
+       p->setTeam(this->teams[rand()%2]);
+     }
+  } else {
+    p->setTeam(NULL);
+  }
 }
 
 void GameDirector::reset(){

@@ -28,6 +28,8 @@ public:
 
   QSet<QString> & getModifiedProperties();
 
+  QList<Player*> & getPlayers();
+
 signals:
 
 public slots:

@@ -23,6 +23,7 @@ public:
     void respawn();
 
     Player * getOwner();
+    void setOwner(Player * p);
 
     Team * getTeam();
 

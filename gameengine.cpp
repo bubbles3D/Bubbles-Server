@@ -594,13 +594,17 @@ bool GameEngine::processColision(Sphere *s, Cuboid *c){
 
   if(colide(s, c)){
 
-    //Player - Projectile
+    //Projectile - Obstacle
     if(dynamic_cast<Projectile*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
       b = colideProjectileObstacle(dynamic_cast<Projectile*>(s), dynamic_cast<Obstacle*>(c));
 
-      //Player - Player
+    //Player - Obstacle
     } else if(dynamic_cast<Player*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
       b = colidePlayerObstacle(dynamic_cast<Player*>(s), dynamic_cast<Obstacle*>(c));
+
+    //Player - Flag
+    } else if(dynamic_cast<Player*>(s) != NULL && dynamic_cast<Flag*>(c) != NULL){
+      b = colidePlayerFlag(dynamic_cast<Player*>(s), dynamic_cast<Flag*>(c));
     }
   }
 
@@ -821,6 +825,9 @@ void GameEngine::manageColisions(){
   foreach(Obstacle *o, this->field.obstacles){
     staticObjects << o;
   }
+  foreach(Flag *f, Server::getServer()->getGameDirector().getFlags()){
+    staticObjects << f;
+  }
 
   //Static - Dynamic
   foreach(GameObject* o1, staticObjects){
@@ -926,6 +933,30 @@ bool GameEngine::colidePlayerObstacle(Player *p1, Obstacle *){
   p1->setPosZ(p1->getOldPosZ());
 
   return true;
+}
+
+bool GameEngine::colidePlayerFlag(Player *p, Flag *f){
+  if(p->getTeam() != NULL && p->getFlag() != f){ //Si ce n'est pas le drapeau que le joueur porte déjà
+    if(p->getTeam() == f->getTeam()){ //Drapeau même equipe
+      if(f->hasBeenMoved()){  //Si il a été bougé
+        f->respawn(); //On le remet en place
+        return true;
+      } else {
+        if(p->getFlag() != NULL) { //Si on porte un drapeau
+          p->getTeam()->addTeamPoints(1); //Du coup, point marqué, respawn drapeau, etc.
+          p->getFlag()->respawn();
+          p->setFlag(NULL);
+          return true;
+        }
+      }
+    } else { //Drapeau equipe opposée
+      p->setFlag(f); //On le prend :D
+      f->setOwner(p);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 float GameEngine::absF(float value){

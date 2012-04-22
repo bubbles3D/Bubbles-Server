@@ -68,6 +68,7 @@ private:
 
     bool colideProjectileObstacle(Projectile *p, Obstacle *o);
     bool colidePlayerObstacle(Player *p, Obstacle *o);
+    bool colidePlayerFlag(Player *p, Flag *f);
 
     float absF(float value);
 };

@@ -1,6 +1,6 @@
 #include "gameobject.h"
 
-int GameObject::idCounter = 0;
+int GameObject::idCounter = 1;
 
 GameObject::GameObject(QObject *parent) : QObject(parent){
   this->id = idCounter;

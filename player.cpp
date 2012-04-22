@@ -244,8 +244,15 @@ int Player::getFlagId(){
   return this->flag != NULL ? this->flag->id : 0;
 }
 
+Flag * Player::getFlag(){
+  return this->flag;
+}
+
 void Player::setFlag(Flag * flag){
-  this->flag = flag;
+  if(this->flag != flag){
+    this->flag = flag;
+    this->modifiedProperties.insert("flag", QString::number(getFlagId()));
+  }
 }
 
 int Player::getColorRED(){

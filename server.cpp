@@ -55,6 +55,8 @@ void Server::playerConnected()
 
   players[newPlayer->peerAddress().toString() + ":" + QString::number(newPlayer->peerPort())] = p;
 
+  this->gd->addPlayerToGame(p);
+
   connect(newPlayer, SIGNAL(readyRead()), this, SLOT(dataReceived()));
   connect(newPlayer, SIGNAL(disconnected()), this, SLOT(playerDisconnected()));
 }
@@ -294,6 +296,7 @@ void Server::forgePlayersInfo(QVariantMap & packet, bool force){
       if(force || p->getModifiedProperties().contains("colorGREEN")) player.insert("g", p->getColorGREEN());
       if(force || p->getModifiedProperties().contains("colorBLUE")) player.insert("b", p->getColorBLUE());
       if(force || p->getModifiedProperties().contains("team")) player.insert("team", p->getTeamNum());
+      if(force || p->getModifiedProperties().contains("flag")) player.insert("flag", p->getFlagId());
 
       if(!force){ //On ne veut pas effacer les modifs en cas de force
         p->getModifiedProperties().clear();
@@ -383,20 +386,26 @@ void Server::forgeTeamsInfo(QVariantMap & packet, bool force){
   foreach(Team * t, this->gd->getTeams()){
     QVariantMap team;
 
+    team.insert("num", t->getNum());
     if(force) team.insert("cR", t->getColorRED());
     if(force) team.insert("cG", t->getColorGREEN());
     if(force) team.insert("cB", t->getColorBLUE());
-    if(force) team.insert("num", t->getNum());
     if(force) team.insert("name", t->getName());
     if(force || t->getModifiedProperties().contains("points")) team.insert("pts", t->getPoints());
 
-    if(!team.isEmpty()){
+    if(!force){
+      t->getModifiedProperties().clear();
+    }
+
+    if(team.size() > 1){
       teamList << team;
+      qDebug() << "CACACACA  1";
     }
   }
 
   if(!teamList.isEmpty()){
     packet.insert("teams", teamList);
+    qDebug() << "CACACACA  2";
   }
 }
 
@@ -415,6 +424,10 @@ void Server::forgeFlagsInfo(QVariantMap & packet, bool force){
     if(force || f->getModifiedProperties().contains("posY")) flag.insert("y", f->getPosY());
     if(force || f->getModifiedProperties().contains("posZ")) flag.insert("z", f->getPosZ());
     if(force || f->getModifiedProperties().contains("cube")) flag.insert("cube", f->getCube());
+
+    if(!force){
+      f->getModifiedProperties().clear();
+    }
 
     if(flag.size() > 1){
       flagsList << flag;
@@ -450,7 +463,7 @@ void Server::sendUpdateToPlayers(){
   if(r.size() > 0){
     sendToAllPlayers(r);
 
-    //qDebug() << " : Requette envoyee : \n" + r;
+    qDebug() << " : Requette envoyee : \n" + r;
   }
 }
 

@@ -60,6 +60,7 @@ public:
     void setTeam(Team * team);
 
     int getFlagId();
+    Flag * getFlag();
     void setFlag(Flag * flag);
 
     int getColorRED();

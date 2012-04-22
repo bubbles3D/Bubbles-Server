@@ -6,7 +6,7 @@
 #include "gameengine.h"
 #include "team.h"
 
-#define GAME_TIME 10
+#define GAME_TIME 1000
 #define PAUSE_TIME 10
 
 class GameEngine;
@@ -30,6 +30,8 @@ public:
   QList<Team*> getTeams();
 
   QList<Flag*> getFlags();
+
+  void addPlayerToGame(Player * p);
 
 signals:
 
