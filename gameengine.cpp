@@ -936,7 +936,7 @@ bool GameEngine::colidePlayerObstacle(Player *p1, Obstacle *){
 }
 
 bool GameEngine::colidePlayerFlag(Player *p, Flag *f){
-  if(p->getTeam() != NULL && p->getFlag() != f){ //Si ce n'est pas le drapeau que le joueur porte déjà
+  if(p->getTeam() != NULL && p->getFlag() != f && f->getOwner() != NULL){ //Si ce n'est pas le drapeau que le joueur porte déjà
     if(p->getTeam() == f->getTeam()){ //Drapeau même equipe
       if(f->hasBeenMoved()){  //Si il a été bougé
         f->respawn(); //On le remet en place
@@ -950,8 +950,10 @@ bool GameEngine::colidePlayerFlag(Player *p, Flag *f){
         }
       }
     } else { //Drapeau equipe opposée
+
       p->setFlag(f); //On le prend :D
       f->setOwner(p);
+
       return true;
     }
   }

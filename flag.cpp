@@ -30,11 +30,13 @@ bool Flag::hasBeenMoved(){
 }
 
 void Flag::respawn(){
-  this->setPosX(initialPosX);
-  this->setPosY(initialPosY);
-  this->setPosZ(initialPosZ);
+  this->setPosX(this->initialPosX);
+  this->setPosY(this->initialPosY);
+  this->setPosZ(this->initialPosZ);
 
-  this->setCube(initialCube);
+  this->setCube(this->initialCube);
+
+  this->modifiedProperties.insert("posX", QString::number(getPosX()));
 }
 
 Player * Flag::getOwner(){

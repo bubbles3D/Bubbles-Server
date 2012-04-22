@@ -399,13 +399,11 @@ void Server::forgeTeamsInfo(QVariantMap & packet, bool force){
 
     if(team.size() > 1){
       teamList << team;
-      qDebug() << "CACACACA  1";
     }
   }
 
   if(!teamList.isEmpty()){
     packet.insert("teams", teamList);
-    qDebug() << "CACACACA  2";
   }
 }
 

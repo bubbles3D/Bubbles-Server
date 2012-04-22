@@ -74,6 +74,7 @@ void Player::reset(){
   setKills(0);
   setPosY(getHeight() * RATIO);
   setCube(1);
+  setFlag(NULL);
 
   this->respawn();
 }
@@ -241,7 +242,8 @@ void Player::setTeam(Team * team){
 }
 
 int Player::getFlagId(){
-  return this->flag != NULL ? this->flag->id : 0;
+  //qDebug() << this->flag;
+  return this->flag == NULL ? 0 : this->flag->id;
 }
 
 Flag * Player::getFlag(){
