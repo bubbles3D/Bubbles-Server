@@ -1,12 +1,12 @@
 #include "team.h"
 
-Team::Team(QString name, int num, int colorRED, int colorGREEN, int colorBLUE, int faceRespawn, QObject *parent) : QObject(parent) {
+Team::Team(QString name, int num, int colorRED, int colorGREEN, int colorBLUE, int respawnFace, QObject *parent) : QObject(parent) {
   this->name = name;
   this->num = num;
   this->colorRED = colorRED;
   this->colorGREEN = colorGREEN;
   this->colorBLUE = colorBLUE;
-  this->faceRespawn = faceRespawn;
+  this->respawnFace = respawnFace;
 
   this->teamPoints = 0;
 }
@@ -62,6 +62,10 @@ int Team::getColorGREEN(){
 
 int Team::getColorBLUE(){
   return this->colorBLUE;
+}
+
+int Team::getRespawnFace(){
+  return this->respawnFace;
 }
 
 QSet<QString> & Team::getModifiedProperties(){

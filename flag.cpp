@@ -48,9 +48,29 @@ Player * Flag::getOwner(){
 
 void Flag::setOwner(Player * p){
   this->owner = p;
-  this->moved = true;
 }
 
 Team * Flag::getTeam(){
   return this->team;
+}
+
+void Flag::setPosX(float posX){
+  if(posX != this->initialPosX){
+    this->moved = true;
+  }
+  Cuboid::setPosX(posX);
+}
+
+void Flag::setPosY(float posY){
+  if(posY != this->initialPosY){
+    this->moved = true;
+  }
+  Cuboid::setPosY(posY);
+}
+
+void Flag::setPosZ(float posZ){
+  if(posZ != this->initialPosZ){
+    this->moved = true;
+  }
+  Cuboid::setPosZ(posZ);
 }

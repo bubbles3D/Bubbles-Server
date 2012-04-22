@@ -13,13 +13,50 @@ Field::Field(QObject *parent) :
   //regenerateMap();
 }
 
-void Field::setRespawnPos(Player & p){
+void Field::setRespawnPos(Player & p, int face){
   bool b = true;
 
+  int f = face == 0 ? rand() % 6 + 1 : face;
+
   while(b){
-    p.setPosX(rand()%(this->maxX - (int)p.getRadius()));
-    p.setPosZ(rand()%(this->maxZ - (int)p.getRadius()));
-    p.setPosY(p.getRadius());
+    switch(f){
+    case 1:
+      p.setPosX(rand()%(this->maxX - (int)p.getRadius()));
+      p.setPosZ(rand()%(this->maxZ - (int)p.getRadius()));
+      p.setPosY(p.getRadius());
+      p.setCube(1);
+      break;
+    case 2:
+      p.setPosX(rand()%(this->maxX - (int)p.getRadius()));
+      p.setPosY(rand()%(this->maxY - (int)p.getRadius()));
+      p.setPosZ(p.getRadius());
+      p.setCube(2);
+      break;
+    case 3:
+      p.setPosZ(rand()%(this->maxX - (int)p.getRadius()));
+      p.setPosY(rand()%(this->maxY - (int)p.getRadius()));
+      p.setPosX(this->maxX - p.getRadius());
+      p.setCube(3);
+      break;
+    case 4:
+      p.setPosX(rand()%(this->maxX - (int)p.getRadius()));
+      p.setPosY(rand()%(this->maxY - (int)p.getRadius()));
+      p.setPosZ(this->maxZ - p.getRadius());
+      p.setCube(4);
+      break;
+    case 5:
+      p.setPosX(rand()%(this->maxX - (int)p.getRadius()));
+      p.setPosZ(rand()%(this->maxZ - (int)p.getRadius()));
+      p.setPosY(this->maxY - p.getRadius());
+      p.setCube(5);
+      break;
+    case 6:
+      p.setPosZ(rand()%(this->maxX - (int)p.getRadius()));
+      p.setPosY(rand()%(this->maxY - (int)p.getRadius()));
+      p.setPosX(p.getRadius());
+      p.setCube(6);
+      break;
+    }
 
     p.setOldPosX(p.getPosX());
     p.setOldPosY(p.getPosY());

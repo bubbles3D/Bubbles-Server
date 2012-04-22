@@ -11,7 +11,7 @@ class Team : public QObject
 {
     Q_OBJECT
 public:
-  explicit Team(QString name, int num, int colorRED, int colorGREEN, int colorBLUE, int faceRespawn = 0, QObject *parent = 0);
+  explicit Team(QString name, int num, int colorRED, int colorGREEN, int colorBLUE, int respawnFace = 0, QObject *parent = 0);
 
   int getPoints();
   void addTeamPoints(int teamPoints);
@@ -25,6 +25,7 @@ public:
   int getColorRED();
   int getColorGREEN();
   int getColorBLUE();
+  int getRespawnFace();
 
   QSet<QString> & getModifiedProperties();
 
@@ -45,7 +46,7 @@ private:
   int colorGREEN;
   int colorBLUE;
 
-  int faceRespawn;
+  int respawnFace;
 
   QList<Player*> players;
 

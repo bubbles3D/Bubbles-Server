@@ -32,7 +32,7 @@ public:
     int maxY;
     int maxZ;
 
-    void setRespawnPos(Player & p);
+    void setRespawnPos(Player & p, int face = 0);
 
     void regenerateMap();
 

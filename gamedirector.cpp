@@ -114,17 +114,16 @@ void GameDirector::addPlayerToGame(Player * p){
   if(this->gameType == 2 || this->gameType == 3) { //TDM ou CTF
      if(this->teams[0]->getPlayers().size() > this->teams[1]->getPlayers().size()){
        p->setTeam(this->teams[1]);
-       qDebug() << "CACA1";
      } else if(this->teams[1]->getPlayers().size() > this->teams[0]->getPlayers().size()){
        p->setTeam(this->teams[0]);
-      qDebug() << "CACA2";
      } else {
-       qDebug() << "CACA3";
        p->setTeam(this->teams[rand()%2]);
      }
   } else {
     p->setTeam(NULL);
   }
+
+  p->reset();
 }
 
 void GameDirector::reset(){
@@ -153,8 +152,8 @@ void GameDirector::reset(){
 }
 
 void GameDirector::setTeams(){
-  Team * t1 = new Team("RED TEAM", 1, 255, 0, 0, 0, this);
-  Team * t2 = new Team("BLUE TEAM", 2, 0, 0, 255, 0, this);
+  Team * t1 = new Team("RED TEAM", 1, 255, 0, 0, 1, this);
+  Team * t2 = new Team("BLUE TEAM", 2, 0, 0, 255, 5, this);
   this->teams << t1 << t2;
 
   QList<Player*> players = Server::getServer()->getPlayers();

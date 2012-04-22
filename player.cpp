@@ -3,7 +3,6 @@
 #include "server.h"
 
 Player::Player(QObject *parent) : Sphere(parent) {
-  this->reset();
 }
 
 bool Player::takeHit(int power){
@@ -66,7 +65,11 @@ void Player::respawn(){
     this->setFlag(NULL);
   }
 
-  Server::getServer()->getGameEngine().getField().setRespawnPos(*this);
+  if(this->team != NULL){
+    Server::getServer()->getGameEngine().getField().setRespawnPos(*this, this->team->getRespawnFace());
+  } else {
+
+  }
 }
 
 

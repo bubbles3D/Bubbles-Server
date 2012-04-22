@@ -27,6 +27,10 @@ public:
 
     Team * getTeam();
 
+    void setPosX(float posX);
+    void setPosY(float posY);
+    void setPosZ(float posZ);
+
 private:
     bool moved;
 
