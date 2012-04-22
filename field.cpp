@@ -10,7 +10,7 @@ Field::Field(QObject *parent) :
 
   srand(time(NULL));
 
-  regenerateMap();
+  //regenerateMap();
 }
 
 void Field::setRespawnPos(Player & p){

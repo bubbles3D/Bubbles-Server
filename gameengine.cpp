@@ -936,16 +936,18 @@ bool GameEngine::colidePlayerObstacle(Player *p1, Obstacle *){
 }
 
 bool GameEngine::colidePlayerFlag(Player *p, Flag *f){
-  if(p->getTeam() != NULL && p->getFlag() != f && f->getOwner() != NULL){ //Si ce n'est pas le drapeau que le joueur porte déjà
+  if(p->getTeam() != NULL && p->getFlag() != f){ //Si ce n'est pas le drapeau que le joueur porte déjà
     if(p->getTeam() == f->getTeam()){ //Drapeau même equipe
       if(f->hasBeenMoved()){  //Si il a été bougé
         f->respawn(); //On le remet en place
+        qDebug() << "DRAPEAU AMI REMIS EN PLACE";
         return true;
       } else {
         if(p->getFlag() != NULL) { //Si on porte un drapeau
           p->getTeam()->addTeamPoints(1); //Du coup, point marqué, respawn drapeau, etc.
           p->getFlag()->respawn();
           p->setFlag(NULL);
+          qDebug() << "DRAPEAU ENEMI CAPTURE";
           return true;
         }
       }
@@ -953,7 +955,7 @@ bool GameEngine::colidePlayerFlag(Player *p, Flag *f){
 
       p->setFlag(f); //On le prend :D
       f->setOwner(p);
-
+      qDebug() << "DRAPEAU ENEMI PRIS";
       return true;
     }
   }

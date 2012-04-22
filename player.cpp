@@ -58,6 +58,14 @@ void Player::respawn(){
 
   this->setSpeed(SPEED);
 
+  if(this->flag != NULL){
+    this->flag->setPosX(this->getPosX());
+    this->flag->setPosY(this->getPosY());
+    this->flag->setPosZ(this->getPosZ());
+    this->flag->setCube(this->getCube());
+    this->setFlag(NULL);
+  }
+
   Server::getServer()->getGameEngine().getField().setRespawnPos(*this);
 }
 
@@ -242,7 +250,6 @@ void Player::setTeam(Team * team){
 }
 
 int Player::getFlagId(){
-  //qDebug() << this->flag;
   return this->flag == NULL ? 0 : this->flag->id;
 }
 

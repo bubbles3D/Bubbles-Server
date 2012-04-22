@@ -37,6 +37,9 @@ void Flag::respawn(){
   this->setCube(this->initialCube);
 
   this->modifiedProperties.insert("posX", QString::number(getPosX()));
+  this->modifiedProperties.insert("posY", QString::number(getPosY()));
+  this->modifiedProperties.insert("posZ", QString::number(getPosZ()));
+  this->modifiedProperties.insert("cube", QString::number(getCube()));
 }
 
 Player * Flag::getOwner(){
@@ -45,6 +48,7 @@ Player * Flag::getOwner(){
 
 void Flag::setOwner(Player * p){
   this->owner = p;
+  this->moved = true;
 }
 
 Team * Flag::getTeam(){
