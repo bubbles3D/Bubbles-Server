@@ -254,7 +254,7 @@ void Player::setTeam(Team * team){
     this->team = team;
     this->modifiedProperties.insert("team", QString::number(this->getTeamNum()));
 
-    if(!team->getPlayers().contains(this)){
+    if(team != NULL && !team->getPlayers().contains(this)){
       team->getPlayers().append(this);
     }
   }
