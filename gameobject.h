@@ -56,6 +56,8 @@ public:
 
     QMap<QString, QString> & getModifiedProperties();
 
+    bool toDelete;
+
 signals:
 
 public slots:

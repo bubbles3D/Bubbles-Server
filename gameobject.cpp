@@ -5,6 +5,8 @@ int GameObject::idCounter = 1;
 GameObject::GameObject(QObject *parent) : QObject(parent){
   this->id = idCounter;
   idCounter++;
+
+  toDelete = false;
 }
 
 QMap<QString, QString> & GameObject::getModifiedProperties(){

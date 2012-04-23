@@ -27,13 +27,14 @@ void GameEngine::updateObjects(){
   updatePlayers(msSinceLastUpdate);
   updateProjectiles(msSinceLastUpdate);
   manageColisions();
+  deleteDeleted();
 
- // if(this->modif) {
-    //qDebug() << this->modif;
-    server->sendUpdateToPlayers();
+  // if(this->modif) {
+  //qDebug() << this->modif;
+  server->sendUpdateToPlayers();
 
-//	this->modif = false;
- // }
+  //	this->modif = false;
+  // }
 
   int span = msIdealUpdate - time.restart();
 
@@ -551,15 +552,15 @@ Field & GameEngine::getField(){
 }
 
 bool GameEngine::processColision(GameObject *o1, GameObject *o2){
-
-  if(dynamic_cast<Sphere*>(o1) != NULL && dynamic_cast<Sphere*>(o2) != NULL){
-    return processColision((Sphere*) o1, (Sphere*) o2);
-  } else if(dynamic_cast<Sphere*>(o1) != NULL && dynamic_cast<Cuboid*>(o2) != NULL){
-    return processColision((Sphere*) o1, (Cuboid*) o2);
-  } else if(dynamic_cast<Cuboid*>(o1) != NULL && dynamic_cast<Sphere*>(o2) != NULL) {
-    return processColision((Sphere*) o2, (Cuboid*) o1);
+  if(o1 != NULL && o2 != NULL){
+    if(dynamic_cast<Sphere*>(o1) != NULL && dynamic_cast<Sphere*>(o2) != NULL){
+      return processColision((Sphere*) o1, (Sphere*) o2);
+    } else if(dynamic_cast<Sphere*>(o1) != NULL && dynamic_cast<Cuboid*>(o2) != NULL){
+      return processColision((Sphere*) o1, (Cuboid*) o2);
+    } else if(dynamic_cast<Cuboid*>(o1) != NULL && dynamic_cast<Sphere*>(o2) != NULL) {
+      return processColision((Sphere*) o2, (Cuboid*) o1);
+    }
   }
-
   return false;
 }
 
@@ -598,11 +599,11 @@ bool GameEngine::processColision(Sphere *s, Cuboid *c){
     if(dynamic_cast<Projectile*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
       b = colideProjectileObstacle(dynamic_cast<Projectile*>(s), dynamic_cast<Obstacle*>(c));
 
-    //Player - Obstacle
+      //Player - Obstacle
     } else if(dynamic_cast<Player*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
       b = colidePlayerObstacle(dynamic_cast<Player*>(s), dynamic_cast<Obstacle*>(c));
 
-    //Player - Flag
+      //Player - Flag
     } else if(dynamic_cast<Player*>(s) != NULL && dynamic_cast<Flag*>(c) != NULL){
       b = colidePlayerFlag(dynamic_cast<Player*>(s), dynamic_cast<Flag*>(c));
     }
@@ -613,7 +614,7 @@ bool GameEngine::processColision(Sphere *s, Cuboid *c){
 
 bool GameEngine::colide(Sphere *s1, Sphere *s2){
   float d = sqrt(pow(s1->getPosX() - s2->getPosX(), 2) + pow(s1->getPosY() - s2->getPosY(), 2) + pow(s1->getPosZ() - s2->getPosZ(), 2));
-//qDebug() << "D : " << d;
+  //qDebug() << "D : " << d;
   if(d < s1->getRadius() + s2->getRadius()){
     return true;
   } else {
@@ -804,7 +805,7 @@ bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
   return d <= s1->getRadius() + s2->getRadius();
 }
 
-bool GameEngine::approximateColision(Sphere *s, Cuboid *c){
+bool GameEngine::approximateColision(Sphere *, Cuboid *){
   return false;
 }
 
@@ -848,7 +849,31 @@ void GameEngine::manageColisions(){
       }
     }
   }
+}
 
+void GameEngine::deleteDeleted(){
+  QList<GameObject*> objects;
+
+  foreach(Player * p, server->getPlayers()){
+    objects << p;
+
+    foreach(Projectile * pr, p->projectiles){
+      objects << pr;
+    }
+  }
+
+  foreach(Obstacle *o, this->field.obstacles){
+    objects << o;
+  }
+  foreach(Flag *f, Server::getServer()->getGameDirector().getFlags()){
+    objects << f;
+  }
+
+  foreach(GameObject *o, objects){
+    if(o->toDelete){
+      delete o;
+    }
+  }
 }
 
 bool GameEngine::colideObject(GameObject* ob){
@@ -920,7 +945,11 @@ bool GameEngine::colideProjectileProjectile(Projectile *p1, Projectile *p2){
 }
 
 bool GameEngine::colideProjectileObstacle(Projectile *p, Obstacle *o){
-  o->takeHit(p->power);
+  if(o->takeHit(p->power)){
+    Server::getServer()->addObjectToClear(o->id);
+    this->field.obstacles.removeOne(o);
+    o->toDelete = true;
+  }
 
   p->explode();
 

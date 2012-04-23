@@ -63,7 +63,7 @@ private:
 
     void forgePlayersInfo(QVariantMap & packet, bool force = false);
     void forgeProjectilesInfo(QVariantMap & packet, bool force = false);
-    void forgeFieldInfo(QVariantMap & packet);
+    void forgeFieldInfo(QVariantMap & packet, bool force = false);
     void forgeToClearInfo(QVariantMap & packet);
     void forgeGameInfo(QVariantMap & packet);
     void forgeTeamsInfo(QVariantMap & packet, bool force = false);

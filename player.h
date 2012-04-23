@@ -74,6 +74,7 @@ public:
     void hitPlayer(Player & p, int power = 1);
 
     void respawn();
+    void throwFlag();
     void reset();
 
     void fire();

@@ -57,18 +57,22 @@ void Player::respawn(){
 
   this->setSpeed(SPEED);
 
+  throwFlag();
+
+  if(this->team != NULL){
+    Server::getServer()->getGameEngine().getField().setRespawnPos(*this, this->team->getRespawnFace());
+  } else {
+
+  }
+}
+
+void Player::throwFlag(){
   if(this->flag != NULL){
     this->flag->setPosX(this->getPosX());
     this->flag->setPosY(this->getPosY());
     this->flag->setPosZ(this->getPosZ());
     this->flag->setCube(this->getCube());
     this->setFlag(NULL);
-  }
-
-  if(this->team != NULL){
-    Server::getServer()->getGameEngine().getField().setRespawnPos(*this, this->team->getRespawnFace());
-  } else {
-
   }
 }
 

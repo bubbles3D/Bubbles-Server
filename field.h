@@ -12,7 +12,7 @@
 #define MAX_FIELD_Y 3000
 #define MAX_FIELD_Z 3000
 
-#define OBJECTS_DENSITY 0 //Nb d'objets dans une aire de 1000*1000*1000
+#define OBJECTS_DENSITY 3 //Nb d'objets dans une aire de 1000*1000*1000
 #define OBJECTS_MAX_WIDTH 450
 #define OBJECTS_MIN_WIDTH 40
 #define OBJECTS_MAX_HEIGHT 450

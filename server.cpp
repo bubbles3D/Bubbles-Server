@@ -71,12 +71,12 @@ void Server::playerDisconnected(){
   Player *p = this->players[socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())];
   this->players.remove(socket->peerAddress().toString() + ":" + QString::number(socket->peerPort()));
 
+  p->throwFlag();
+
   this->toClear << p->id;
   foreach(Projectile * pr, p->projectiles){
     this->toClear << pr->id;
   }
-
-  p->deleteLater();
 
   delete p;
 }
@@ -200,7 +200,7 @@ QByteArray Server::forgeInit(){
   QVariantMap packet;
   QByteArray json;
 
-  forgeFieldInfo(packet);
+  forgeFieldInfo(packet, true);
   forgePlayersInfo(packet, true);
   forgeProjectilesInfo(packet, true);
   forgeGameInfo(packet);
@@ -229,6 +229,7 @@ QByteArray Server::forgeUpdate(){
   forgeToClearInfo(packet);
   forgeTeamsInfo(packet);
   forgeFlagsInfo(packet);
+  forgeFieldInfo(packet);
 
   if(packet.size() > 0){
     QJson::Serializer serializer;
@@ -240,12 +241,12 @@ QByteArray Server::forgeUpdate(){
   return json;
 }
 
-void Server::forgeFieldInfo(QVariantMap & packet){
+void Server::forgeFieldInfo(QVariantMap & packet, bool force){
 
   QVariantMap fld;
 
-  fld.insert("width", this->gd->getGameEngine().getField().maxX);
-  fld.insert("height", this->gd->getGameEngine().getField().maxZ);
+  if(force) fld.insert("width", this->gd->getGameEngine().getField().maxX);
+  if(force) fld.insert("height", this->gd->getGameEngine().getField().maxZ);
 
   QVariantList obs;
 
@@ -253,19 +254,29 @@ void Server::forgeFieldInfo(QVariantMap & packet){
 	QVariantMap ob;
 
 	ob.insert("id", o->id);
-    ob.insert("x", (double)o->getPosX());
-    ob.insert("y", (double)o->getPosY());
-    ob.insert("z", (double)o->getPosZ());
-    ob.insert("w", (double)o->getWidth());
-    ob.insert("h", (double)o->getHeight());
-    ob.insert("l", (double)o->getLength());
+    if(force || o->getModifiedProperties().contains("posX")) ob.insert("x", (double)o->getPosX());
+    if(force || o->getModifiedProperties().contains("posY")) ob.insert("y", (double)o->getPosY());
+    if(force || o->getModifiedProperties().contains("posZ")) ob.insert("z", (double)o->getPosZ());
+    if(force || o->getModifiedProperties().contains("width")) ob.insert("w", (double)o->getWidth());
+    if(force || o->getModifiedProperties().contains("height")) ob.insert("h", (double)o->getHeight());
+    if(force || o->getModifiedProperties().contains("length")) ob.insert("l", (double)o->getLength());
 
-	obs << ob;
+    if(!force){ //On ne veut pas effacer les modifs en cas de force
+      o->getModifiedProperties().clear();
+    }
+
+    if(ob.size() > 1){ //Si on a donné autre chose que l'id..
+      obs << ob;
+    }
   }
 
-  fld.insert("obstacles", obs);
+  if(obs.size() > 0){
+    fld.insert("obstacles", obs);
+  }
 
-  packet.insert("field", fld);
+  if(!fld.isEmpty()){
+    packet.insert("field", fld);
+  }
 }
 
 void Server::forgePlayersInfo(QVariantMap & packet, bool force){

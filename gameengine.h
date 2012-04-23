@@ -52,6 +52,8 @@ private:
     void updateProjectiles(int msSinceLastUpdate);
     void manageColisions();
 
+    void deleteDeleted();
+
     bool processColision(GameObject *o1, GameObject *o2);
     bool processColision(Sphere *s1, Sphere *s2);
     bool processColision(Sphere *s, Cuboid *c);

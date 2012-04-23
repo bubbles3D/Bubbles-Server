@@ -27,5 +27,5 @@ void Projectile::explode(){
 
     Server::getServer()->addObjectToClear(this->id);
 
-    this->deleteLater();
+    this->toDelete = true;
 }
