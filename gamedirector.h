@@ -6,7 +6,7 @@
 #include "gameengine.h"
 #include "team.h"
 
-#define GAME_TIME 10
+#define GAME_TIME 60
 #define PAUSE_TIME 10
 
 class GameEngine;
@@ -27,7 +27,7 @@ public:
   int getGameType();
   QString getGameTypeName();
 
-  QList<Team*> getTeams();
+  QList<Team*> & getTeams();
 
   QList<Flag*> getFlags();
 

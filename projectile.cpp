@@ -22,8 +22,14 @@ Projectile::Projectile(Player * playerOwner) : Sphere(playerOwner){
     this->setColorBLUE(playerOwner->getColorBLUE());
 }
 
-void Projectile::explode(){
+Projectile::~Projectile(){
+  if(this->owner != NULL){
     this->owner->projectiles.removeOne(this);
+  }
+}
+
+void Projectile::explode(){
+    //this->owner->projectiles.removeOne(this);
 
     Server::getServer()->addObjectToClear(this->id);
 

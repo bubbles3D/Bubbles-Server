@@ -661,6 +661,7 @@ bool GameEngine::colide(Sphere *s, Cuboid *c){
 }
 
 bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
+
   float s1dx = s1->getPosX() - s1->getOldPosX();
   float s1dy = s1->getPosY() - s1->getOldPosY();
   float s1dz = s1->getPosZ() - s1->getOldPosZ();
@@ -801,7 +802,7 @@ bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
     //}
     //qDebug() << "OBJET " <<  ox <<" "<< oy << " " << oz;
   }
-
+//if (d <= s1->getRadius() + s2->getRadius()) qDebug() << (d <= s1->getRadius() + s2->getRadius()) << " CACACAAAAA";
   return d <= s1->getRadius() + s2->getRadius();
 }
 
@@ -894,7 +895,7 @@ bool GameEngine::colideObject(GameObject* ob){
 
   foreach(GameObject* o1, objects){
     if(o1 != ob && processColision(o1, ob)){
-      qDebug() << "COLIDEEEEEEEEEEE ";
+      //qDebug() << "COLIDEEEEEEEEEEE ";
       return true;
 	}
   }

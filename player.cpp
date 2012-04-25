@@ -5,6 +5,12 @@
 Player::Player(QObject *parent) : Sphere(parent) {
 }
 
+Player::~Player(){
+  if(this->team != NULL){
+    this->team->removePlayer(this);
+  }
+}
+
 bool Player::takeHit(int power){
   bool death = false;
 
@@ -12,7 +18,7 @@ bool Player::takeHit(int power){
 
   if(this->getLife() <= 0){
 
-    this->setDeads(this->getDeads() + 1);
+    this->setDeaths(this->getDeaths() + 1);
 
 	respawn();
 
@@ -32,7 +38,7 @@ bool Player::takeHit(int power){
 
 void Player::hitPlayer(Player & p, int power){
   if(this->getLife() < MAX_LIFE){
-    this->setLife(this->getLife() + 1);
+    this->setLife(this->getLife() + 2);
 
 	double diameterDiff = MAX_DIAMETER - MIN_DIAMETER;
 
@@ -85,7 +91,7 @@ void Player::reset(){
   setDirX(1);
   setDirY(0);
   setDirZ(0);
-  setDeads(0);
+  setDeaths(0);
   setKills(0);
   setPosY(getHeight() * RATIO);
   setCube(1);
@@ -206,14 +212,14 @@ void Player::setLife(int life){
   }
 }
 
-int Player::getDeads(){
-  return this->deads;
+int Player::getDeaths(){
+  return this->deaths;
 }
 
-void Player::setDeads(int deads){
-  if(this->deads != deads){
-    this->deads = deads;
-    this->modifiedProperties.insert("deads", QString::number(deads));
+void Player::setDeaths(int deaths){
+  if(this->deaths != deaths){
+    this->deaths = deaths;
+    this->modifiedProperties.insert("deaths", QString::number(deaths));
   }
 }
 

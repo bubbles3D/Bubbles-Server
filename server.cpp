@@ -297,7 +297,7 @@ void Server::forgePlayersInfo(QVariantMap & packet, bool force){
       if(force || p->getModifiedProperties().contains("dirY")) player.insert("vy", (double)p->getDirY());
       if(force || p->getModifiedProperties().contains("dirZ")) player.insert("vz", (double)p->getDirZ());
       if(force || p->getModifiedProperties().contains("life")) player.insert("life", p->getLife());
-      if(force || p->getModifiedProperties().contains("deaths")) player.insert("deaths", p->getDeads());
+      if(force || p->getModifiedProperties().contains("deaths")) player.insert("deaths", p->getDeaths());
       if(force || p->getModifiedProperties().contains("kills")) player.insert("kills", p->getKills());
       if(force || p->getModifiedProperties().contains("width")) player.insert("w", (double)p->getWidth());
       if(force || p->getModifiedProperties().contains("height")) player.insert("h", (double)p->getHeight());
@@ -472,7 +472,7 @@ void Server::sendUpdateToPlayers(){
   if(r.size() > 0){
     sendToAllPlayers(r);
 
-    qDebug() << " : Requette envoyee : \n" + r;
+    //qDebug() << " : Requette envoyee : \n" + r;
   }
 }
 
@@ -484,7 +484,7 @@ void Server::sendInitToAllPlayers(){
   if(r.size() > 0 && ! this->players.isEmpty()){
     sendToAllPlayers(r);
 
-    qDebug() << " : Requette envoyee : \n" + r;
+    //qDebug() << " : Requette envoyee : \n" + r;
   }
 }
 
@@ -497,7 +497,7 @@ void Server::sendInitToPlayer(Player & p){
 
   sendUpdateToPlayers();
 
-  qDebug() << " : Requette envoyee : \n" + r;
+  //qDebug() << " : Requette envoyee : \n" + r;
 }
 
 GameEngine & Server::getGameEngine(){

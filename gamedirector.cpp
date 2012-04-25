@@ -26,16 +26,16 @@ GameEngine & GameDirector::getGameEngine(){
 void GameDirector::newGame(){
   reset();
 
-  if(this->gameType == 3){
+  /*if(this->gameType == 3){
     this->gameType = 1;
     setDM();
   } else if(this->gameType == 1){
     this->gameType = 2;
     setTDM();
-  } else if(this->gameType == 2){
-    this->gameType = 3;
-    setCTF();
-  }
+  } else if(this->gameType == 2){*/
+  this->gameType = 3;
+  setCTF();
+  //}
 
   this->g->getField().regenerateMap();
 
@@ -102,7 +102,7 @@ QString GameDirector::getGameTypeName(){
   return res;
 }
 
-QList<Team*> GameDirector::getTeams(){
+QList<Team*> & GameDirector::getTeams(){
   return this->teams;
 }
 
@@ -112,13 +112,13 @@ QList<Flag*> GameDirector::getFlags(){
 
 void GameDirector::addPlayerToGame(Player * p){
   if(this->gameType == 2 || this->gameType == 3) { //TDM ou CTF
-     if(this->teams[0]->getPlayers().size() > this->teams[1]->getPlayers().size()){
-       p->setTeam(this->teams[1]);
-     } else if(this->teams[1]->getPlayers().size() > this->teams[0]->getPlayers().size()){
-       p->setTeam(this->teams[0]);
-     } else {
-       p->setTeam(this->teams[rand()%2]);
-     }
+    if(this->teams[0]->getPlayers().size() > this->teams[1]->getPlayers().size()){
+      p->setTeam(this->teams[1]);
+    } else if(this->teams[1]->getPlayers().size() > this->teams[0]->getPlayers().size()){
+      p->setTeam(this->teams[0]);
+    } else {
+      p->setTeam(this->teams[rand()%2]);
+    }
   } else {
     p->setTeam(NULL);
   }
@@ -155,7 +155,8 @@ void GameDirector::reset(){
 void GameDirector::setTeams(){
   Team * t1 = new Team("RED TEAM", 1, 255, 0, 0, 1, this);
   Team * t2 = new Team("BLUE TEAM", 2, 0, 0, 255, 5, this);
-  this->teams << t1 << t2;
+  this->teams << t1;
+  this->teams << t2;
 
   QList<Player*> players = Server::getServer()->getPlayers();
 
@@ -191,5 +192,6 @@ void GameDirector::setCTF(){
   Flag * f1 = new Flag(f.maxX / 2, 25, f.maxZ / 2, 1, this->teams[0], this);
   Flag * f2 = new Flag(f.maxX / 2, f.maxY - 25, f.maxZ / 2, 5, this->teams[1], this);
 
-  this->flags << f1 << f2;
+  this->flags << f1;
+  this->flags << f2;
 }
