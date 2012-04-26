@@ -11,7 +11,7 @@ GameDirector::GameDirector(QObject *parent) : QObject(parent) {
   this->pauseTimer->setSingleShot(true);
   connect(this->pauseTimer, SIGNAL(timeout()), this, SLOT(newGame()));
 
-  this->gameType = 1;
+  this->gameType = 3;
 }
 
 void GameDirector::startFun(){
@@ -26,16 +26,16 @@ GameEngine & GameDirector::getGameEngine(){
 void GameDirector::newGame(){
   reset();
 
-  /*if(this->gameType == 3){
+  if(this->gameType == 3){
     this->gameType = 1;
     setDM();
   } else if(this->gameType == 1){
     this->gameType = 2;
     setTDM();
-  } else if(this->gameType == 2){*/
-  this->gameType = 3;
-  setCTF();
-  //}
+  } else if(this->gameType == 2){
+    this->gameType = 3;
+    setCTF();
+  }
 
   this->g->getField().regenerateMap();
 

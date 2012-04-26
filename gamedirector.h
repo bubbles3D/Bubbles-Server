@@ -6,7 +6,7 @@
 #include "gameengine.h"
 #include "team.h"
 
-#define GAME_TIME 60
+#define GAME_TIME 180
 #define PAUSE_TIME 10
 
 class GameEngine;

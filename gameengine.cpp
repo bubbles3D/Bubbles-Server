@@ -436,8 +436,8 @@ void GameEngine::updatePlayers(int msSinceLastUpdate){
         p->setPosY(realMaxField - playerRadius + pos2);
         p->setCube(2);
         tmp = p->getDirZ();
-        p->setDirZ(p->getDirY());
-        p->setDirY(- tmp);
+        p->setDirZ(- p->getDirY());
+        p->setDirY(tmp);
       } else {
         p->setPosZ(p->getPosZ() - ZMove);
       }
@@ -593,7 +593,7 @@ bool GameEngine::processColision(Sphere *s1, Sphere *s2){
 bool GameEngine::processColision(Sphere *s, Cuboid *c){
   bool b = false;
 
-  if(colide(s, c)){
+  if(colide(s, c) || approximateColision(s, c)){
 
     //Projectile - Obstacle
     if(dynamic_cast<Projectile*>(s) != NULL && dynamic_cast<Obstacle*>(c) != NULL){
@@ -660,7 +660,7 @@ bool GameEngine::colide(Sphere *s, Cuboid *c){
   }
 }
 
-bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
+bool GameEngine::approximateColision(GameObject *s1, GameObject *s2){
 
   float s1dx = s1->getPosX() - s1->getOldPosX();
   float s1dy = s1->getPosY() - s1->getOldPosY();
@@ -689,7 +689,7 @@ bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
   float wy;
   float wz;
 
-  float d = INT_MAX;
+  //float d = INT_MAX;
 
   if(dS1 > 0 || dS2 > 0){
     if(dS1 >= dS2){
@@ -783,7 +783,97 @@ bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
     }
 
 
-    d = sqrt(pow(mx - ox, 2) + pow(my - oy, 2) + pow(mz - oz, 2));
+    if(dynamic_cast<Sphere*>(s1) != NULL && dynamic_cast<Sphere*>(s2) != NULL){
+      Sphere o1;
+      o1.setPosX(mx);
+      o1.setPosY(my);
+      o1.setPosZ(mz);
+      o1.setWidth(s1->getWidth());
+
+      Sphere o2;
+      o2.setPosX(ox);
+      o2.setPosY(oy);
+      o2.setPosZ(oz);
+      o2.setWidth(s2->getWidth());
+
+      return colide(&o1, &o2);
+    } /*else if(dynamic_cast<Sphere*>(s1) != NULL && dynamic_cast<Cuboid*>(s2) != NULL){
+      Sphere o1;
+      o1.setWidth(s1->getWidth());
+
+      Cuboid o2;
+      o2.setWidth(s2->getWidth());
+      o2.setHeight(s2->getHeight());
+      o2.setLength(s2->getLength());
+
+      if(dS1 >= dS2){
+        o1.setPosX(mx);
+        o1.setPosY(my);
+        o1.setPosZ(mz);
+
+        o2.setPosX(ox);
+        o2.setPosY(oy);
+        o2.setPosZ(oz);
+      } else {
+        o2.setPosX(mx);
+        o2.setPosY(my);
+        o2.setPosZ(mz);
+
+        o1.setPosX(s1->getPosX());
+        o1.setPosY(s1->getPosY());
+        o1.setPosZ(s1->getPosZ());
+      }
+
+      if(colide(&o1, &o2)){
+
+        qDebug() << s1->getPosX() << " " << s1->getPosY() << " " << s1->getPosZ();
+        qDebug() << o1.getPosX() << " " << o1.getPosY() << " " << o1.getPosZ();
+        qDebug() << s2->getPosX() << " " << s2->getPosY() << " " << s2->getPosZ();
+        qDebug() << o2.getPosX() << " " << o2.getPosY() << " " << o2.getPosZ();
+        qDebug() << s2->getWidth() << " " << s2->getHeight() << " " << s2->getLength() << " " << s1->getWidth();
+        qDebug() << o2.getWidth() << " " << o2.getHeight() << " " << o2.getLength() << " " << o1.getWidth();
+        qDebug() << "---------------------";
+        return true;
+      } else {
+        return false;
+      }
+
+    } else if(dynamic_cast<Cuboid*>(s1) != NULL && dynamic_cast<Sphere*>(s2) != NULL) {
+      Sphere o1;
+      o1.setWidth(s2->getWidth());
+
+      Cuboid o2;
+      o2.setWidth(s1->getWidth());
+      o2.setHeight(s1->getHeight());
+      o2.setLength(s1->getLength());
+
+      if(dS1 >= dS2){
+        o1.setPosX(mx);
+        o1.setPosY(my);
+        o1.setPosZ(mz);
+
+        o2.setPosX(ox);
+        o2.setPosY(oy);
+        o2.setPosZ(oz);
+      } else {
+        o2.setPosX(mx);
+        o2.setPosY(my);
+        o2.setPosZ(mz);
+
+        o1.setPosX(ox);
+        o1.setPosY(oy);
+        o1.setPosZ(oz);
+      }
+
+      if(colide(&o1, &o2)){
+        qDebug() << o1.getWidth() << "-" << o1.getHeight() << "-" << o1.getLength();
+        return true;
+      } else {
+        return false;
+      }
+    } */
+
+    //d = sqrt(pow(mx - ox, 2) + pow(my - oy, 2) + pow(mz - oz, 2));
 
     //qDebug() << "O " << ox << " " <<oy<< " " << oz;
     //qDebug() << "M " << mx << " " <<my << " " << mz;
@@ -802,12 +892,10 @@ bool GameEngine::approximateColision(Sphere *s1, Sphere *s2){
     //}
     //qDebug() << "OBJET " <<  ox <<" "<< oy << " " << oz;
   }
-//if (d <= s1->getRadius() + s2->getRadius()) qDebug() << (d <= s1->getRadius() + s2->getRadius()) << " CACACAAAAA";
-  return d <= s1->getRadius() + s2->getRadius();
-}
 
-bool GameEngine::approximateColision(Sphere *, Cuboid *){
   return false;
+  //if (d <= s1->getRadius() + s2->getRadius()) qDebug() << (d <= s1->getRadius() + s2->getRadius()) << " CACACAAAAA";
+  //return d <= s1->getRadius() + s2->getRadius();
 }
 
 void GameEngine::manageColisions(){

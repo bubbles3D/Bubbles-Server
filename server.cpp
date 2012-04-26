@@ -472,7 +472,7 @@ void Server::sendUpdateToPlayers(){
   if(r.size() > 0){
     sendToAllPlayers(r);
 
-    //qDebug() << " : Requette envoyee : \n" + r;
+    qDebug() << " : Requette envoyee : \n" + r;
   }
 }
 
@@ -484,7 +484,7 @@ void Server::sendInitToAllPlayers(){
   if(r.size() > 0 && ! this->players.isEmpty()){
     sendToAllPlayers(r);
 
-    //qDebug() << " : Requette envoyee : \n" + r;
+    qDebug() << " : Requette envoyee : \n" + r;
   }
 }
 
@@ -497,7 +497,7 @@ void Server::sendInitToPlayer(Player & p){
 
   sendUpdateToPlayers();
 
-  //qDebug() << " : Requette envoyee : \n" + r;
+  qDebug() << " : Requette envoyee : \n" + r;
 }
 
 GameEngine & Server::getGameEngine(){

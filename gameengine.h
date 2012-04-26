@@ -61,8 +61,7 @@ private:
     bool colide(Sphere *s1, Sphere *s2);
     bool colide(Sphere *s, Cuboid *c);
 
-    bool approximateColision(Sphere *s1, Sphere *s2);
-    bool approximateColision(Sphere *s, Cuboid *c);
+    bool approximateColision(GameObject *s1, GameObject *s2);
 
     bool colidePlayerProjectile(Player *pl, Projectile *pr);
     bool colidePlayerPlayer(Player *p1, Player *p2);
