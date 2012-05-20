@@ -1,6 +1,5 @@
 #include "logger.h"
 
-
 #define NO_COLOR  "\033[0m" //disable any colors
 // regular colors
 #define BLACK "\033[0;30m"
@@ -54,34 +53,34 @@ void Logger::log(QString log, logType typeLog){
   if(Logger::logLvl.contains(typeLog)){
     switch(typeLog){
     case WARNING :
-      qDebug() << EYELLOW << "WARNING " << NO_COLOR << log;
+      qDebug() << EYELLOW << "WARNING" << NO_COLOR << log;
       break;
     case ERROR :
-      qDebug() << ERED << "ERROR " << NO_COLOR << log;
+      qDebug() << ERED << "ERROR" << NO_COLOR << log;
       break;
     case INIT :
-      qDebug() << ECYAN << "INIT " << NO_COLOR << log;
+      qDebug() << ECYAN << "INIT" << NO_COLOR << log;
       break;
     case REQUEST_R :
-      qDebug() << EMAGENTA << "REQUEST_R " << NO_COLOR << log;
+      qDebug() << EMAGENTA << "REQUEST_R" << NO_COLOR << log;
       break;
     case REQUEST_S :
-      qDebug() << EMAGENTA << "REQUEST_S " << NO_COLOR << log;
+      qDebug() << EMAGENTA << "REQUEST_S" << NO_COLOR << log;
       break;
     case DEBUG_1 :
-      qDebug() << EBLUE << "DEBUG_1 " << NO_COLOR << log;
+      qDebug() << EBLUE << "DEBUG_1" << NO_COLOR << log;
       break;
     case DEBUG_2 :
-      qDebug() << EBLUE << "DEBUG_2 " << NO_COLOR << log;
+      qDebug() << EBLUE << "DEBUG_2" << NO_COLOR << log;
       break;
     case DEBUG_3 :
-      qDebug() << EBLUE << "DEBUG_3 " << NO_COLOR << log;
+      qDebug() << EBLUE << "DEBUG_3" << NO_COLOR << log;
       break;
     case GAME_INFO_1 :
-      qDebug() << EGREEN << "GAME_INFO_1 " << NO_COLOR << log;
+      qDebug() << EGREEN << "GAME_INFO_1" << NO_COLOR << log;
       break;
     case GAME_INFO_2 :
-      qDebug() << EGREEN << "GAME_INFO_2 " << NO_COLOR << log;
+      qDebug() << EGREEN << "GAME_INFO_2" << NO_COLOR << log;
       break;
     default:
       qDebug() << log;
