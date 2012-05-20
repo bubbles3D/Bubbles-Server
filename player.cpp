@@ -68,7 +68,7 @@ void Player::respawn(){
   if(this->team != NULL){
     Server::getServer()->getGameEngine().getField().setRespawnPos(*this, this->team->getRespawnFace());
   } else {
-
+    Server::getServer()->getGameEngine().getField().setRespawnPos(*this);
   }
 }
 
