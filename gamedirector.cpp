@@ -51,7 +51,7 @@ void GameDirector::newGame(){
 
   Server::getServer()->sendInitToAllPlayers();
 
-  qDebug() << "New Game !! (" << GAME_TIME << " sec)";
+  Logger::log("New Game !! (" + QString::number(GAME_TIME) + " sec)", Logger::GAME_INFO_2);
 }
 
 void GameDirector::stopGame(){
@@ -61,7 +61,7 @@ void GameDirector::stopGame(){
 
   this->g->stop();
 
-  qDebug() << "Stop Game !! ("  << PAUSE_TIME << " sec)";
+  Logger::log("Stop Game !! (" + QString::number(PAUSE_TIME) + " sec)", Logger::GAME_INFO_2);
 }
 
 float GameDirector::getRemainingGameTime(){

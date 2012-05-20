@@ -19,11 +19,10 @@ void Server::init(){
   if (!listen(QHostAddress::Any, this->port)) { // Demarrage du serveur sur toutes les IP disponibles
 
     // Si le serveur n'a pas ete demarre correctement
-	qDebug() << "Le serveur n'a pas pu etre demarre. Raison :" + errorString();
+    Logger::log("Le serveur n'a pas pu etre demarre. Raison :" + errorString(), Logger::ERROR);
   } else {
     // Si le serveur a ete demarre correctement
 
-	//qDebug() << ;
 	Logger::log("Le serveur a ete demarre sur ", Logger::INIT);
 
 	QString adress = "127.0.0.1";
@@ -32,7 +31,7 @@ void Server::init(){
 	for (int i = 0; i < ipAddressesList.size(); ++i) {
       if (ipAddressesList.at(i) != QHostAddress::LocalHost && ipAddressesList.at(i).toIPv4Address()) {
 		adress = ipAddressesList.at(i).toString();
-		qDebug() << adress + ":" + QString::number(serverPort());
+        Logger::log(adress + ":" + QString::number(serverPort()), Logger::INIT);
       }
 	}
 
@@ -44,7 +43,7 @@ void Server::init(){
 
 void Server::playerConnected()
 {
-  qDebug() << "Joueur connecte ! (" + QString::number(players.size() + 1) + " joueurs)";
+  Logger::log("Joueur connecte ! (" + QString::number(players.size() + 1) + " joueurs)", Logger::GAME_INFO_2);
 
   QTcpSocket *newPlayer = nextPendingConnection();
 
@@ -62,7 +61,7 @@ void Server::playerConnected()
 }
 
 void Server::playerDisconnected(){
-  qDebug() << "Joueur deconnecte ! (" + QString::number(players.size() - 1) + " joueurs)";
+  Logger::log("Joueur deconnecte ! (" + QString::number(players.size() - 1) + " joueurs)", Logger::GAME_INFO_1);
 
   QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
   if(socket == 0)
@@ -96,7 +95,7 @@ void Server::dataReceived()
 	p.pendingRequest = true;
 	p.request += buffer;
 
-    //qDebug() << " : Requette reçue : \n" + p.request;
+    Logger::log(" : Requette reçue : \n" + p.request, Logger::REQUEST_R);
 
 	if(p.request.indexOf("$$") >= 0){
       p.pendingRequest = false;
@@ -133,7 +132,7 @@ void Server::processRequest(Player &p, QString req){
 
 	QVariantMap result = parser.parse(json, &ok).toMap();
 	if (!ok) {
-      qDebug() << "An error occurred during parsing request : " + p.request;
+      Logger::log("An error occurred during parsing request : " + p.request, Logger::WARNING);
       return;
 	}
 
@@ -163,7 +162,7 @@ void Server::processRequest(Player &p, QString req){
             p.setDirY(mouse["y"].toFloat());
             p.setDirZ(mouse["z"].toFloat());
           } else {
-            qDebug() << "Key name unknown for player : " + p.getName();
+            Logger::log("Key name unknown for player : " + p.getName(), Logger::WARNING);
           }
 		}
       }
@@ -182,7 +181,7 @@ void Server::processRequest(Player &p, QString req){
 
           p.fire();
 		} else {
-          qDebug() << "Key name unknown for bullet : " + p.getName();
+          Logger::log("Key name unknown for bullet : " + p.getName(), Logger::WARNING);
 		}
       }
 
@@ -472,7 +471,7 @@ void Server::sendUpdateToPlayers(){
   if(r.size() > 0){
     sendToAllPlayers(r);
 
-    qDebug() << " : Requette envoyee : \n" + r;
+    Logger::log(" : Requette envoyee : \n" + r, Logger::REQUEST_S);
   }
 }
 
@@ -484,7 +483,7 @@ void Server::sendInitToAllPlayers(){
   if(r.size() > 0 && ! this->players.isEmpty()){
     sendToAllPlayers(r);
 
-    qDebug() << " : Requette envoyee : \n" + r;
+    Logger::log(" : Requette envoyee : \n" + r, Logger::REQUEST_S);
   }
 }
 
@@ -497,7 +496,7 @@ void Server::sendInitToPlayer(Player & p){
 
   sendUpdateToPlayers();
 
-  qDebug() << " : Requette envoyee : \n" + r;
+  Logger::log(" : Requette envoyee : \n" + r, Logger::REQUEST_S);
 }
 
 GameEngine & Server::getGameEngine(){
